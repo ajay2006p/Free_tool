@@ -34,15 +34,20 @@ function Slot({ doc, w, h, label }) {
 export default function AdSlot({ label = "Advertisement" }) {
   const [cfg, setCfg] = useState(null);
   const [ready, setReady] = useState(false);
+  const [isLocal, setIsLocal] = useState(false);
 
   useEffect(() => {
     let alive = true;
+    // Ad networks don't serve on localhost — show the placeholder only there.
+    setIsLocal(/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname) || location.hostname.endsWith(".local"));
     getAdConfig().then((c) => { if (alive) { setCfg(c); setReady(true); } });
     return () => { alive = false; };
   }, []);
 
+  const showAd = ready && !isLocal && cfg?.enabled !== false;
+
   // Optional override set in the admin Ads Manager (custom code mode).
-  if (ready && cfg?.enabled && cfg.mode === "custom" && cfg.customCode) {
+  if (showAd && cfg?.mode === "custom" && cfg.customCode) {
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Slot doc={wrap(cfg.customCode)} w={cfg.width || 728} h={cfg.height || 90} label={label} />
@@ -52,8 +57,8 @@ export default function AdSlot({ label = "Advertisement" }) {
 
   return (
     <>
-      <div className="ad-desktop"><Slot doc={ready ? bannerDoc(DESKTOP.key, DESKTOP.w, DESKTOP.h) : null} w={DESKTOP.w} h={DESKTOP.h} label={label} /></div>
-      <div className="ad-mobile"><Slot doc={ready ? bannerDoc(MOBILE.key, MOBILE.w, MOBILE.h) : null} w={MOBILE.w} h={MOBILE.h} label={label} /></div>
+      <div className="ad-desktop"><Slot doc={showAd ? bannerDoc(DESKTOP.key, DESKTOP.w, DESKTOP.h) : null} w={DESKTOP.w} h={DESKTOP.h} label={label} /></div>
+      <div className="ad-mobile"><Slot doc={showAd ? bannerDoc(MOBILE.key, MOBILE.w, MOBILE.h) : null} w={MOBILE.w} h={MOBILE.h} label={label} /></div>
     </>
   );
 }

@@ -136,7 +136,7 @@ export function Pomodoro() {
           <button className={mode === "break" ? "on" : ""} onClick={() => reset("break")}>Break 5</button>
         </div>
       </div>
-      <div style={{ fontFamily: "var(--serif)", fontSize: 84, fontWeight: 700, lineHeight: 1 }}>{mm}:{ss}</div>
+      <div style={{ fontFamily: "var(--serif)", fontSize: "clamp(52px, 17vw, 84px)", fontWeight: 700, lineHeight: 1 }}>{mm}:{ss}</div>
       <p className="muted" style={{ fontFamily: "var(--sans)" }}>Completed focus sessions: <strong>{rounds}</strong></p>
       <div className="hero-actions" style={{ justifyContent: "center" }}>
         <button className="btn" onClick={() => setRunning((r) => !r)}>{running ? "Pause" : "Start"}</button>

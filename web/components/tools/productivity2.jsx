@@ -19,7 +19,7 @@ export function Stopwatch() {
   const fmt = (t) => { const cs = Math.floor((t % 1000) / 10), s = Math.floor(t / 1000) % 60, m = Math.floor(t / 60000); return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${String(cs).padStart(2, "0")}`; };
   return (
     <div className="tool center">
-      <div style={{ fontSize: 64, fontWeight: 800, fontFamily: "var(--mono)" }}>{fmt(ms)}</div>
+      <div style={{ fontSize: "clamp(40px, 13vw, 64px)", fontWeight: 800, fontFamily: "var(--mono)" }}>{fmt(ms)}</div>
       <div className="hero-actions" style={{ justifyContent: "center", marginTop: 10 }}>
         <button className="btn" onClick={() => setRunning((r) => !r)}>{running ? "Pause" : "Start"}</button>
         <button className="btn btn-outline" onClick={() => running && setLaps([fmt(ms), ...laps])} disabled={!running}>Lap</button>

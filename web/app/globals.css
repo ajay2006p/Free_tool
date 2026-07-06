@@ -467,3 +467,44 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
 .ad-desktop { display: flex; justify-content: center; }
 .ad-mobile { display: none; }
 @media (max-width: 767px) { .ad-desktop { display: none; } .ad-mobile { display: flex; justify-content: center; } }
+
+/* ============ MOBILE UI POLISH (90% of visitors) ============ */
+@media (max-width: 640px) {
+  /* bigger tap targets */
+  .btn { padding: 11px 16px; }
+  .btn-sm { padding: 8px 13px; font-size: 13px; }
+  .copy-btn { padding: 7px 12px; }
+  input, select, textarea { font-size: 16px; } /* stops iOS zoom-on-focus */
+  .input, .select { padding: 11px 13px; }
+
+  /* tool controls wrap & breathe; long inputs go full width */
+  .tool-controls { gap: 8px 10px; }
+  .tool-controls .chk { font-size: 13.5px; }
+  .tool-io { grid-template-columns: 1fr; gap: 12px; }
+
+  /* rows & cards never overflow */
+  .sheet.flex-between, .flex-between { flex-wrap: wrap; }
+  .mono-out, .prose pre, .prose code { word-break: break-word; overflow-wrap: anywhere; }
+  .sheet, .card { padding: 16px; }
+  table { font-size: 13px; }
+
+  /* section heads + hero */
+  .section-head { gap: 8px; }
+  .section-head h2 { font-size: 22px; }
+  .hero { padding: 40px 0 20px; }
+  .hero p.lead { font-size: 16px; }
+  .chips .chip { font-size: 12.5px; padding: 6px 11px; }
+
+  /* HeroShowcase: hide floating labels (they overflow), shrink the mockup */
+  .hs-float { display: none !important; }
+  .hs-screen { height: 168px; padding: 14px; }
+  .hs-tabs { gap: 4px; } .hs-tab { font-size: 10px; padding: 4px 7px; }
+  .hs-url { font-size: 11px; padding: 5px 9px; }
+
+  /* big number displays cap to the screen */
+  .tool .center { overflow: hidden; }
+}
+@media (max-width: 400px) {
+  .tool-grid { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
