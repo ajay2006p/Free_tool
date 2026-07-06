@@ -6,6 +6,7 @@ import AdSlot from "../components/AdSlot";
 import ToolSearch from "../components/ToolSearch";
 import HeroShowcase from "../components/HeroShowcase";
 import BlogCard from "../components/BlogCard";
+import NativeAd from "../components/NativeAd";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,8 @@ export default async function HomePage() {
       </section>
 
       <div className="container"><AdSlot label="Banner" /></div>
+
+      <NativeAd />
 
       <section className="section container">
         <div className="section-head"><h2>From the blog</h2><Link href="/blog" className="btn btn-outline btn-sm">All posts</Link></div>

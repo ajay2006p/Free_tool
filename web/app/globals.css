@@ -464,3 +464,6 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
 .ad-tag { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .ad-sub { font-size: 11px; }
 .ad-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; overflow: hidden; }
+.ad-desktop { display: flex; justify-content: center; }
+.ad-mobile { display: none; }
+@media (max-width: 767px) { .ad-desktop { display: none; } .ad-mobile { display: flex; justify-content: center; } }

@@ -3,6 +3,7 @@ import Script from "next/script";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Analytics from "../components/Analytics";
+import SiteAds from "../components/SiteAds";
 import { site } from "../lib/site";
 
 export const metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
           />
         ) : null}
         <Analytics />
+        <SiteAds />
         <Header />
         <main>{children}</main>
         <Footer />

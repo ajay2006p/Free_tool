@@ -1,5 +1,5 @@
 export const site = {
-  name: process.env.NEXT_PUBLIC_SITE_NAME || "DevHub",
+  name: process.env.NEXT_PUBLIC_SITE_NAME || "FreeTool",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   tagline: "The all-in-one hub for developers, students & founders",
   description:
