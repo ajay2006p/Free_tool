@@ -1,0 +1,63 @@
+// Database schema — MongoDB (via Prisma). Both apps (web + admin) use the SAME
+// MongoDB database (set DATABASE_URL to your MongoDB Atlas connection string).
+// Keep this file identical to admin/prisma/schema.prisma.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  slug       String   @unique
+  excerpt    String   @default("")
+  content    String   @default("")
+  coverImage String   @default("")
+  category   String   @default("General")
+  author     String   @default("Admin")
+  published  Boolean  @default(true)
+  featured   Boolean  @default(false)
+  views      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+}
+
+model Visit {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  path      String
+  session   String
+  ref       String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([session])
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  name         String   @default("")
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model ShortLink {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  code      String   @unique
+  url       String
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  key   String @id @map("_id")
+  value String @default("")
+}

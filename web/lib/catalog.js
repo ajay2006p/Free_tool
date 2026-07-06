@@ -1,0 +1,364 @@
+/* ============================================================================
+   The catalog of tools. EVERY tool here is fully working (no signup, no keys).
+   Drives the nav, homepage, search, /services, /[category], /[category]/[tool]
+   and the sitemap. Every entry has a matching component in lib/toolRegistry.js.
+   ========================================================================== */
+
+import { PAIRS } from "./conversions";
+
+export const categories = [
+  {
+    slug: "tools",
+    icon: "🛠️",
+    name: "Developer Tools",
+    tagline: "Format, encode, generate — the everyday coding utilities.",
+    services: [
+      { slug: "json-formatter", name: "JSON Formatter", desc: "Beautify, minify & validate JSON.", live: true },
+      { slug: "base64-encoder", name: "Base64 Encode / Decode", desc: "Convert text to and from Base64.", live: true },
+      { slug: "url-encoder", name: "URL Encoder / Decoder", desc: "Percent-encode or decode URLs.", live: true },
+      { slug: "jwt-decoder", name: "JWT Decoder", desc: "Decode a token's header & payload.", live: true },
+      { slug: "uuid-generator", name: "UUID Generator", desc: "Generate v4 UUIDs in bulk.", live: true },
+      { slug: "hash-generator", name: "Hash Generator", desc: "SHA-1, SHA-256, SHA-384, SHA-512.", live: true },
+      { slug: "password-generator", name: "Password Generator", desc: "Strong random passwords.", live: true },
+      { slug: "regex-tester", name: "Regex Tester", desc: "Test patterns with live matches.", live: true },
+      { slug: "markdown-previewer", name: "Markdown Previewer", desc: "Write Markdown, see live HTML.", live: true },
+      { slug: "color-converter", name: "Color Converter", desc: "HEX ⇄ RGB ⇄ HSL with preview.", live: true },
+      { slug: "gradient-generator", name: "CSS Gradient Generator", desc: "Build & copy CSS gradients.", live: true },
+      { slug: "box-shadow-generator", name: "Box Shadow Generator", desc: "Visual CSS box-shadow builder.", live: true },
+      { slug: "border-radius-generator", name: "Border Radius Generator", desc: "Round corners visually.", live: true },
+      { slug: "qr-code-generator", name: "QR Code Generator", desc: "Text or URL to QR code.", live: true },
+      { slug: "lorem-ipsum", name: "Lorem Ipsum Generator", desc: "Placeholder text by paragraphs.", live: true },
+      { slug: "xml-formatter", name: "XML Formatter", desc: "Pretty-print & indent XML.", live: true },
+      { slug: "html-formatter", name: "HTML Formatter", desc: "Indent and tidy HTML.", live: true },
+      { slug: "yaml-formatter", name: "YAML Formatter", desc: "Clean up and normalize YAML.", live: true },
+      { slug: "sql-formatter", name: "SQL Formatter", desc: "Beautify messy SQL.", live: true },
+      { slug: "css-minifier", name: "CSS Minifier", desc: "Shrink CSS for production.", live: true },
+      { slug: "js-minifier", name: "JavaScript Minifier", desc: "Compress JS files.", live: true },
+      { slug: "csv-converter", name: "CSV ⇄ JSON Converter", desc: "Convert between CSV and JSON.", live: true },
+      { slug: "random-number", name: "Random Number Generator", desc: "Random numbers in any range.", live: true },
+      { slug: "dice-coin", name: "Dice Roller & Coin Flip", desc: "Roll dice or flip a coin.", live: true },
+      { slug: "spin-wheel", name: "Spin the Wheel", desc: "Random name / option picker.", live: true },
+      { slug: "color-contrast", name: "Color Contrast Checker", desc: "WCAG AA/AAA contrast ratio.", live: true },
+      { slug: "url-shortener", name: "URL Shortener", desc: "Shorten long links with click stats.", live: true },
+    ],
+  },
+  {
+    slug: "games",
+    icon: "🎮",
+    name: "Games",
+    tagline: "Quick browser games — no download, just play.",
+    services: [
+      { slug: "game-2048", name: "2048", desc: "Slide & merge tiles to reach 2048.", live: true },
+      { slug: "snake", name: "Snake", desc: "The classic grow-the-snake game.", live: true },
+      { slug: "tic-tac-toe", name: "Tic-Tac-Toe", desc: "Play X/O against an unbeatable AI.", live: true },
+    ],
+  },
+  {
+    slug: "image",
+    icon: "🖼️",
+    name: "Image Tools",
+    tagline: "Resize, crop, compress and convert images in-browser.",
+    services: [
+      { slug: "image-resizer", name: "Image Resizer", desc: "Resize to exact dimensions.", live: true },
+      { slug: "image-cropper", name: "Image Cropper", desc: "Crop images with a drag box.", live: true },
+      { slug: "image-compressor", name: "Image Compressor", desc: "Reduce image file size.", live: true },
+      { slug: "image-to-base64", name: "Image to Base64", desc: "Convert an image to a data URI.", live: true },
+    ],
+  },
+  {
+    slug: "files",
+    icon: "📄",
+    name: "PDF & File Tools",
+    tagline: "Merge, split, sign & convert — free alternatives to paid PDF apps.",
+    services: [
+      { slug: "pdf-merge", name: "Merge PDF", desc: "Combine multiple PDFs into one.", live: true },
+      { slug: "pdf-split", name: "Split PDF", desc: "Extract pages or ranges from a PDF.", live: true },
+      { slug: "pdf-compress", name: "Compress PDF", desc: "Optimize & shrink PDF size.", live: true },
+      { slug: "images-to-pdf", name: "Images to PDF", desc: "Turn JPG/PNG images into a PDF.", live: true },
+      { slug: "pdf-esign", name: "Sign PDF", desc: "Draw & add your signature to a PDF.", live: true },
+      { slug: "image-converter", name: "Image Converter", desc: "PNG ⇄ JPG ⇄ WebP.", live: true },
+      { slug: "social-image-resizer", name: "Social Image Resizer", desc: "Resize for Instagram, YouTube & more.", live: true },
+      { slug: "screen-recorder", name: "Screen Recorder", desc: "Record your screen in the browser.", live: true },
+    ],
+  },
+  {
+    slug: "text",
+    icon: "📝",
+    name: "Text Tools",
+    tagline: "Count, clean, compare and transform text.",
+    services: [
+      { slug: "word-counter", name: "Word & Character Counter", desc: "Words, characters, read time.", live: true },
+      { slug: "case-converter", name: "Case Converter", desc: "camelCase, snake_case, Title…", live: true },
+      { slug: "text-diff", name: "Text Diff Checker", desc: "Compare two texts line by line.", live: true },
+      { slug: "remove-duplicate-lines", name: "Remove Duplicate Lines", desc: "Delete repeated lines.", live: true },
+      { slug: "sort-lines", name: "Sort Lines", desc: "Alphabetically sort lines.", live: true },
+      { slug: "reverse-text", name: "Reverse Text", desc: "Reverse characters, words or lines.", live: true },
+      { slug: "find-replace", name: "Find & Replace", desc: "Replace text in bulk.", live: true },
+      { slug: "text-repeater", name: "Text Repeater", desc: "Repeat text many times.", live: true },
+      { slug: "text-to-speech", name: "Text to Speech", desc: "Read text aloud in your browser.", live: true },
+      { slug: "prompt-optimizer", name: "AI Prompt Optimizer", desc: "Turn a rough idea into a great AI prompt.", live: true },
+    ],
+  },
+  {
+    slug: "calculators",
+    icon: "🧮",
+    name: "Calculators",
+    tagline: "Everyday math — percentages, BMI, loans and more.",
+    services: [
+      { slug: "percentage-calculator", name: "Percentage Calculator", desc: "Percent of, change and more.", live: true },
+      { slug: "bmi-calculator", name: "BMI Calculator", desc: "Body mass index, metric or imperial.", live: true },
+      { slug: "age-calculator", name: "Age Calculator", desc: "Exact age from date of birth.", live: true },
+      { slug: "loan-calculator", name: "Loan / EMI Calculator", desc: "Monthly payment & total interest.", live: true },
+      { slug: "tip-calculator", name: "Tip Calculator", desc: "Split the bill and tip.", live: true },
+      { slug: "discount-calculator", name: "Discount Calculator", desc: "Sale price and savings.", live: true },
+      { slug: "mortgage-calculator", name: "Mortgage Calculator", desc: "Monthly payment & interest.", live: true },
+      { slug: "compound-interest", name: "Compound Interest Calculator", desc: "Project investment growth.", live: true },
+      { slug: "calorie-calculator", name: "Calorie / TDEE Calculator", desc: "Daily calorie & BMR needs.", live: true },
+      { slug: "gpa-calculator", name: "GPA Calculator", desc: "Weighted GPA from grades.", live: true },
+      { slug: "scientific-calculator", name: "Scientific Calculator", desc: "Trig, logs, powers & more.", live: true },
+      { slug: "sip-calculator", name: "SIP / Investment Calculator", desc: "Project mutual-fund SIP growth.", live: true },
+      { slug: "income-tax-calculator", name: "Income Tax Calculator", desc: "Estimate tax by slab/regime.", live: true },
+      { slug: "gst-calculator", name: "GST Calculator", desc: "Add or remove GST from a price.", live: true },
+      { slug: "date-calculator", name: "Date Calculator", desc: "Days between dates & add days.", live: true },
+    ],
+  },
+  {
+    slug: "converters",
+    icon: "🔄",
+    name: "Converters",
+    tagline: "Convert units, numbers, dates and more.",
+    services: [
+      { slug: "unit-converter", name: "Unit Converter", desc: "Length, weight & temperature.", live: true },
+      { slug: "number-base-converter", name: "Number Base Converter", desc: "Binary, octal, decimal, hex.", live: true },
+      { slug: "roman-numeral-converter", name: "Roman Numeral Converter", desc: "Numbers ⇄ Roman numerals.", live: true },
+      { slug: "timestamp-converter", name: "Unix Timestamp Converter", desc: "Timestamp ⇄ human date.", live: true },
+      { slug: "morse-code", name: "Morse Code Translator", desc: "Text ⇄ Morse, with beeps.", live: true },
+    ],
+  },
+  {
+    slug: "convert",
+    icon: "🔁",
+    name: "Unit Conversions",
+    tagline: "Instant, accurate conversions — length, weight, temperature, data & more.",
+    services: PAIRS.map((p) => ({
+      slug: p.slug,
+      name: `${p.fromLabel} to ${p.toLabel}`,
+      desc: `Convert ${p.fromLabel.toLowerCase()} to ${p.toLabel.toLowerCase()} instantly, with a reference table.`,
+      live: true,
+    })),
+  },
+  {
+    slug: "social",
+    icon: "📱",
+    name: "Social Media",
+    tagline: "Hashtags, fancy text and YouTube tools creators love.",
+    services: [
+      { slug: "video-downloader", name: "Social Media Downloader", desc: "Download video from YouTube, TikTok, Instagram, FB & X.", live: true },
+      { slug: "hashtag-generator", name: "Hashtag Generator", desc: "Find hashtags for any topic.", live: true },
+      { slug: "fancy-text-generator", name: "Fancy Text Generator", desc: "𝐁𝐨𝐥𝐝 & stylish fonts for bios.", live: true },
+      { slug: "youtube-thumbnail", name: "YouTube Thumbnail Downloader", desc: "Grab any video's thumbnail.", live: true },
+      { slug: "youtube-embed", name: "YouTube Embed Generator", desc: "Get embed code for a video.", live: true },
+      { slug: "social-character-counter", name: "Social Character Counter", desc: "Check limits for every platform.", live: true },
+      { slug: "utm-builder", name: "UTM Link Builder", desc: "Track campaigns with UTM tags.", live: true },
+    ],
+  },
+  {
+    slug: "seo",
+    icon: "📈",
+    name: "SEO Tools",
+    tagline: "Meta tags, schema and audits to help you rank.",
+    services: [
+      { slug: "meta-tag-generator", name: "Meta Tag Generator", desc: "SEO meta tags.", live: true },
+      { slug: "open-graph-generator", name: "Open Graph Generator", desc: "Rich social previews.", live: true },
+      { slug: "twitter-card-generator", name: "Twitter Card Generator", desc: "Perfect Twitter previews.", live: true },
+      { slug: "schema-generator", name: "Schema Generator", desc: "JSON-LD structured data.", live: true },
+      { slug: "heading-checker", name: "Heading Checker", desc: "Audit your H1–H6 structure.", live: true },
+      { slug: "sitemap-generator", name: "Sitemap Generator", desc: "Generate an XML sitemap.", live: true },
+      { slug: "robots-txt-generator", name: "Robots.txt Generator", desc: "Control crawler access.", live: true },
+      { slug: "slug-generator", name: "URL Slug Generator", desc: "SEO-friendly slugs.", live: true },
+      { slug: "keyword-density", name: "Keyword Density Checker", desc: "Top keywords & density in your text.", live: true },
+    ],
+  },
+  {
+    slug: "productivity",
+    icon: "✅",
+    name: "Productivity",
+    tagline: "Notes, tasks and timers — saved in your browser.",
+    services: [
+      { slug: "notes", name: "Notes", desc: "Quick, saved notes.", live: true },
+      { slug: "todo", name: "Todo List", desc: "Simple, focused tasks.", live: true },
+      { slug: "kanban", name: "Kanban Board", desc: "Visualize your workflow.", live: true },
+      { slug: "pomodoro", name: "Pomodoro Timer", desc: "Focus in 25-minute sprints.", live: true },
+      { slug: "habit-tracker", name: "Habit Tracker", desc: "Build a 7-day streak.", live: true },
+      { slug: "goal-tracker", name: "Goal Tracker", desc: "Track progress to goals.", live: true },
+      { slug: "expense-tracker", name: "Expense Tracker", desc: "See where money goes.", live: true },
+      { slug: "bookmark-manager", name: "Bookmark Manager", desc: "Save links in one place.", live: true },
+      { slug: "stopwatch", name: "Stopwatch", desc: "Stopwatch with lap times.", live: true },
+      { slug: "countdown", name: "Countdown Timer", desc: "Count down to any date.", live: true },
+      { slug: "typing-test", name: "Typing Speed Test", desc: "Measure your WPM & accuracy.", live: true },
+    ],
+  },
+  {
+    slug: "career",
+    icon: "🎯",
+    name: "Career",
+    tagline: "Resume, cover letter and salary tools.",
+    services: [
+      { slug: "resume-builder", name: "Resume Builder", desc: "Build & print an ATS resume.", live: true },
+      { slug: "cover-letter", name: "Cover Letter Builder", desc: "Generate a cover letter.", live: true },
+      { slug: "salary-calculator", name: "Salary Calculator", desc: "Yearly, monthly, hourly.", live: true },
+    ],
+  },
+  {
+    slug: "freelance",
+    icon: "💼",
+    name: "Freelancing",
+    tagline: "Invoices and time tracking for freelancers.",
+    services: [
+      { slug: "invoice-generator", name: "Invoice Generator", desc: "Create & print invoices.", live: true },
+      { slug: "time-tracker", name: "Time Tracker", desc: "Track billable time per task.", live: true },
+    ],
+  },
+];
+
+export const visibleCategories = categories;
+
+// Extra search keywords so related terms find the right tool
+// (e.g. searching "cv" or "resume maker" surfaces the Resume Builder).
+export const aliases = {
+  "resume-builder": "cv resume maker curriculum vitae job application",
+  "cover-letter": "cover letter job application",
+  "salary-calculator": "pay wage hourly income take home",
+  "json-formatter": "json beautifier prettifier viewer validator parser",
+  "base64-encoder": "base64 encode decode",
+  "jwt-decoder": "json web token auth",
+  "password-generator": "random strong password secure",
+  "hash-generator": "sha md5 checksum",
+  "qr-code-generator": "qr code maker barcode",
+  "regex-tester": "regular expression regexp",
+  "color-converter": "hex rgb hsl color picker",
+  "image-compressor": "compress reduce image photo size",
+  "image-to-base64": "image data uri encode",
+  "word-counter": "character letter count words essay",
+  "case-converter": "uppercase lowercase title camel snake text",
+  "text-diff": "compare difference text diff checker",
+  "hashtag-generator": "hashtags instagram tiktok tags finder",
+  "fancy-text-generator": "stylish fonts cool text bio fonts nickname",
+  "youtube-thumbnail": "yt thumbnail image grabber download",
+  "youtube-embed": "yt embed iframe video code",
+  "social-character-counter": "twitter x instagram caption limit counter",
+  "utm-builder": "campaign url tracking link builder",
+  "bmi-calculator": "body mass index weight height",
+  "age-calculator": "age date of birth dob how old",
+  "loan-calculator": "emi mortgage interest loan",
+  "tip-calculator": "tip gratuity split bill",
+  "discount-calculator": "sale percent off discount price",
+  "percentage-calculator": "percent percentage of change",
+  "unit-converter": "length weight temperature metric imperial convert",
+  "number-base-converter": "binary hex decimal octal",
+  "timestamp-converter": "unix epoch time date",
+  "meta-tag-generator": "seo meta tags head",
+  "invoice-generator": "invoice bill billing maker",
+  "time-tracker": "time tracking hours billable stopwatch",
+  "pomodoro": "timer focus study 25 minutes",
+  "todo": "todo task list checklist",
+  "markdown-previewer": "markdown md preview editor",
+  "mortgage-calculator": "home loan mortgage payment",
+  "compound-interest": "investment savings interest growth",
+  "calorie-calculator": "tdee bmr calories diet macros",
+  "gpa-calculator": "grade point average school college",
+  "scientific-calculator": "calculator math trig sin cos",
+  "stopwatch": "timer stopwatch lap",
+  "countdown": "countdown timer to date event",
+  "typing-test": "wpm typing speed test",
+  "morse-code": "morse code translator sos",
+  "text-to-speech": "tts read aloud speech voice",
+  "image-resizer": "resize image photo dimensions",
+  "image-cropper": "crop image photo",
+  "spin-wheel": "wheel spinner random name picker raffle",
+  "random-number": "random number picker rng lottery",
+  "dice-coin": "dice roll coin flip",
+  "color-contrast": "wcag contrast accessibility a11y",
+  "game-2048": "2048 game puzzle",
+  "snake": "snake game classic",
+  "tic-tac-toe": "tic tac toe noughts crosses xo game",
+  "prompt-optimizer": "ai prompt chatgpt claude gpt prompt generator engineering",
+  "pdf-merge": "merge combine pdf join",
+  "pdf-split": "split extract pages pdf separate",
+  "pdf-compress": "compress reduce shrink pdf size smallpdf",
+  "images-to-pdf": "jpg png image to pdf converter",
+  "pdf-esign": "sign signature pdf esign e-signature",
+  "image-converter": "convert png jpg webp image format",
+  "social-image-resizer": "instagram youtube thumbnail resize social image",
+  "screen-recorder": "record screen video capture screencast",
+  "sip-calculator": "sip mutual fund investment return calculator",
+  "income-tax-calculator": "income tax calculator slab regime",
+  "gst-calculator": "gst vat tax calculator add remove",
+  "date-calculator": "days between dates date difference add days",
+  "keyword-density": "keyword density seo content checker",
+  "url-shortener": "short link url shortener tiny",
+  "video-downloader": "download video instagram reel tiktok youtube facebook twitter x saver downloader mp4",
+};
+
+// Per-tool icons (emoji) for the cards + search.
+export const icons = {
+  "json-formatter": "🧩", "base64-encoder": "🔡", "url-encoder": "🔗", "jwt-decoder": "🔐",
+  "uuid-generator": "🆔", "hash-generator": "#️⃣", "password-generator": "🔑", "regex-tester": "🔎",
+  "markdown-previewer": "📝", "color-converter": "🎨", "gradient-generator": "🌈", "box-shadow-generator": "🟦",
+  "border-radius-generator": "⬜", "qr-code-generator": "🔳", "lorem-ipsum": "📜", "xml-formatter": "📄",
+  "html-formatter": "🌐", "yaml-formatter": "🧾", "sql-formatter": "🗃️", "css-minifier": "🎯",
+  "js-minifier": "📦", "csv-converter": "📊", "image-compressor": "🗜️", "image-to-base64": "🖼️",
+  "word-counter": "🔢", "case-converter": "🔤", "text-diff": "🔀", "remove-duplicate-lines": "🧹",
+  "sort-lines": "↕️", "reverse-text": "↩️", "find-replace": "🔁", "text-repeater": "♻️",
+  "percentage-calculator": "％", "bmi-calculator": "⚖️", "age-calculator": "🎂", "loan-calculator": "🏦",
+  "tip-calculator": "💵", "discount-calculator": "🏷️", "unit-converter": "📏", "number-base-converter": "🔢",
+  "roman-numeral-converter": "🏛️", "timestamp-converter": "⏱️", "hashtag-generator": "＃",
+  "fancy-text-generator": "✨", "youtube-thumbnail": "🖼️", "youtube-embed": "▶️",
+  "social-character-counter": "🔠", "utm-builder": "🔗", "meta-tag-generator": "🏷️",
+  "open-graph-generator": "📰", "twitter-card-generator": "🐦", "schema-generator": "🧬",
+  "heading-checker": "📑", "sitemap-generator": "🗺️", "robots-txt-generator": "🤖", "slug-generator": "🔗",
+  "notes": "🗒️", "todo": "✅", "kanban": "📋", "pomodoro": "🍅", "habit-tracker": "🔥",
+  "goal-tracker": "🎯", "expense-tracker": "💰", "bookmark-manager": "🔖",
+  "resume-builder": "📄", "cover-letter": "✉️", "salary-calculator": "💵",
+  "invoice-generator": "🧾", "time-tracker": "⏱️",
+  // new
+  "game-2048": "🎮", "snake": "🐍", "tic-tac-toe": "⭕",
+  "image-resizer": "📐", "image-cropper": "✂️",
+  "random-number": "🎰", "dice-coin": "🎲", "spin-wheel": "🎡", "color-contrast": "🌗",
+  "mortgage-calculator": "🏠", "compound-interest": "📈", "calorie-calculator": "🍎",
+  "gpa-calculator": "🎓", "scientific-calculator": "🧮", "morse-code": "📡",
+  "stopwatch": "⏱️", "countdown": "⏳", "typing-test": "⌨️", "text-to-speech": "🔊",
+  "prompt-optimizer": "✨",
+  "pdf-merge": "📑", "pdf-split": "✂️", "pdf-compress": "🗜️", "images-to-pdf": "🖼️",
+  "pdf-esign": "✍️", "image-converter": "🔄", "social-image-resizer": "📐", "screen-recorder": "🎥",
+  "sip-calculator": "📈", "income-tax-calculator": "🧾", "gst-calculator": "🧮", "date-calculator": "📅",
+  "keyword-density": "🔍", "url-shortener": "🔗", "video-downloader": "⬇️",
+};
+
+export function toolIcon(slug, fallback = "🔧") {
+  return icons[slug] || fallback;
+}
+
+// A flat list of every tool (used by search).
+export const allTools = categories.flatMap((c) =>
+  c.services.map((s) => ({
+    ...s, category: c.slug, categoryName: c.name, icon: icons[s.slug] || c.icon,
+    href: `/${c.slug}/${s.slug}`, kw: aliases[s.slug] || "",
+  }))
+);
+
+export function getCategory(slug) {
+  return categories.find((c) => c.slug === slug);
+}
+
+export function getService(categorySlug, serviceSlug) {
+  const cat = getCategory(categorySlug);
+  if (!cat) return null;
+  const service = cat.services.find((s) => s.slug === serviceSlug);
+  if (!service) return null;
+  return { category: cat, service };
+}
+
+export function countTotal() {
+  return allTools.length;
+}
