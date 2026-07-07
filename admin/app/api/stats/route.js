@@ -28,6 +28,27 @@ async function adsterraEarnings() {
 export async function GET() {
   if (!isAuthed()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const emptyStats = (error = "") => NextResponse.json({
+    totalViews: 0,
+    todayViews: 0,
+    uniqueVisitors: 0,
+    liveUsers: 0,
+    days: Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(Date.now() - (6 - i) * 86400000);
+      return { key: dayKey(d), label: d.toLocaleDateString("en-US", { weekday: "short" }), count: 0 };
+    }),
+    topPages: [],
+    referrers: [],
+    earnings: {
+      connected: false,
+      cpm: Number(process.env.ADSTERRA_CPM || 0.6),
+      estimated: 0,
+      error: error || "Database unavailable",
+    },
+    at: new Date().toISOString(),
+    error: error || "Database unavailable",
+  });
+
   try {
     const now = Date.now();
     const dayAgo = new Date(now - 86400000);
@@ -71,6 +92,7 @@ export async function GET() {
       at: new Date().toISOString(),
     });
   } catch (e) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    const message = String(e?.message || "Database unavailable");
+    return emptyStats(message);
   }
 }

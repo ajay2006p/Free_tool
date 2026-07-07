@@ -15,23 +15,37 @@ export default function LiveStats() {
         const res = await fetch("/api/stats", { cache: "no-store" });
         if (!res.ok) throw new Error("Could not load stats");
         const data = await res.json();
-        if (alive) { setS(data); setErr(""); }
-      } catch (e) { if (alive) setErr(e.message); }
+        if (alive) {
+          setS(data);
+          setErr("");
+        }
+      } catch (e) {
+        if (alive) setErr(e.message);
+      }
     }
     load();
     const id = setInterval(load, 10000);
-    return () => { alive = false; clearInterval(id); };
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
   }, []);
 
   if (err) return <div className="notice notice-error">{err}. If the visits table is missing, run <code>npm run setup</code> in the <code>web</code> folder.</div>;
-  if (!s) return <div className="empty">Loading live stats…</div>;
+  if (!s) return <div className="empty">Loading live stats...</div>;
+
+  const dbWarning = s.error ? (
+    <div className="notice notice-error" style={{ marginBottom: 16 }}>
+      {s.error}. Check <code>DATABASE_URL</code>, Atlas network access, and run <code>npm run setup</code> in <code>web</code> if the collections are missing.
+    </div>
+  ) : null;
 
   const maxDay = Math.max(1, ...s.days.map((d) => d.count));
   const pretty = (p) => p === "/" ? "Home" : p;
 
   return (
     <div>
-      {/* Top cards */}
+      {dbWarning}
       <div className="grid grid-4" style={{ marginBottom: 20 }}>
         <div className="stat reveal g4">
           <div className="s-top">
@@ -46,7 +60,6 @@ export default function LiveStats() {
         <div className="stat reveal g3"><div className="s-top"><span className="s-ic">📅</span></div><h3>{s.todayViews.toLocaleString()}</h3><p>Views today</p></div>
       </div>
 
-      {/* Earnings */}
       <div className="grid grid-2" style={{ marginBottom: 20 }}>
         <div className="card">
           <div className="flex-between"><h3 style={{ margin: 0, fontSize: 16 }}>💰 Estimated earnings</h3><span className="badge badge-soon">est.</span></div>
@@ -66,9 +79,8 @@ export default function LiveStats() {
         </div>
       </div>
 
-      {/* 7-day chart */}
       <div className="card" style={{ marginBottom: 20 }}>
-        <h3 style={{ margin: "0 0 14px", fontSize: 16 }}>Views — last 7 days</h3>
+        <h3 style={{ margin: "0 0 14px", fontSize: 16 }}>Views - last 7 days</h3>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 160 }}>
           {s.days.map((d) => (
             <div key={d.key} style={{ flex: 1, textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%" }}>
@@ -80,7 +92,6 @@ export default function LiveStats() {
         </div>
       </div>
 
-      {/* Top pages + referrers */}
       <div className="grid grid-2">
         <div className="card">
           <h3 style={{ margin: "0 0 10px", fontSize: 16 }}>Top pages</h3>
