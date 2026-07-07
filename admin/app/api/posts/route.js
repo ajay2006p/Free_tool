@@ -3,6 +3,16 @@ import { prisma } from "../../../lib/db";
 import { isAuthed } from "../../../lib/auth";
 import { slugify } from "../../../lib/utils";
 
+const toText = (value) =>
+  (value || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export async function GET() {
   if (!isAuthed()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const posts = await prisma.post.findMany({ orderBy: { createdAt: "desc" } });
@@ -27,7 +37,7 @@ export async function POST(request) {
       data: {
         title, slug,
         excerpt: (data.excerpt || "").trim(),
-        content: data.content || "",
+        content: toText(data.content),
         coverImage: (data.coverImage || "").trim(),
         category: (data.category || "General").trim(),
         author: (data.author || "Admin").trim(),
