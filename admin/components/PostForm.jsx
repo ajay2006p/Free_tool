@@ -26,7 +26,33 @@ export default function PostForm({ post }) {
   const [aiTopic, setAiTopic] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [aiErr, setAiErr] = useState("");
+  const [uploadingCover, setUploadingCover] = useState(false);
   const up = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  async function uploadImage(file) {
+    if (!file) return "";
+    setUploadingCover(true);
+    try {
+      const auth = await fetch("/api/imagekit/auth").then((r) => r.json());
+      if (!auth?.signature) throw new Error(auth?.error || "ImageKit is not configured.");
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("fileName", file.name);
+      fd.append("publicKey", auth.publicKey || auth.token);
+      fd.append("signature", auth.signature);
+      fd.append("expire", String(auth.expire));
+      fd.append("token", auth.token);
+      fd.append("folder", "blog");
+
+      const res = await fetch("https://upload.imagekit.io/api/v1/files/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Upload failed.");
+      return data.url || "";
+    } finally {
+      setUploadingCover(false);
+    }
+  }
 
   async function generate() {
     if (!aiTopic.trim()) return;
@@ -103,7 +129,30 @@ export default function PostForm({ post }) {
         <input className="input" value={form.excerpt} onChange={(e) => up("excerpt", e.target.value)} placeholder="A beginner-friendly roadmap with free resources." /></div>
       <div className="grid grid-2">
         <div className="form-field"><label>Cover image URL (optional)</label>
-          <input className="input" value={form.coverImage} onChange={(e) => up("coverImage", e.target.value)} placeholder="https://images.unsplash.com/..." /></div>
+          <input className="input" value={form.coverImage} onChange={(e) => up("coverImage", e.target.value)} placeholder="https://images.unsplash.com/..." />
+          <div className="row-actions" style={{ marginTop: 8 }}>
+            <label className="btn btn-outline" style={{ cursor: "pointer" }}>
+              {uploadingCover ? "Uploading..." : "Upload from computer"}
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadImage(file);
+                    if (url) up("coverImage", url);
+                  } catch (err) {
+                    setError(err.message || "Could not upload image.");
+                  } finally {
+                    e.target.value = "";
+                  }
+                }}
+              />
+            </label>
+          </div>
+        </div>
         <div className="form-field"><label>Author</label>
           <input className="input" value={form.author} onChange={(e) => up("author", e.target.value)} /></div>
       </div>
