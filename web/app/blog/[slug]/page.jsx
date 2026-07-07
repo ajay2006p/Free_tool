@@ -8,6 +8,9 @@ import AdSlot from "../../../components/AdSlot";
 
 export const dynamic = "force-dynamic";
 
+const looksLikeHtml = (s) => /<\/?[a-z][\s\S]*>/i.test(s);
+const toHtml = (s) => (!s ? "" : looksLikeHtml(s) ? s : marked.parse(s));
+
 async function getPost(slug) {
   try { return await prisma.post.findUnique({ where: { slug } }); }
   catch (e) { return null; }
@@ -29,7 +32,7 @@ export default async function PostPage({ params }) {
   if (!post || !post.published) notFound();
 
   prisma.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } }).catch(() => {});
-  const html = marked.parse(post.content || "");
+  const html = toHtml(post.content || "");
 
   const jsonLd = {
     "@context": "https://schema.org", "@type": "BlogPosting",
