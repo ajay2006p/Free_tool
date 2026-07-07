@@ -3,16 +3,6 @@ import { prisma } from "../../../../lib/db";
 import { isAuthed } from "../../../../lib/auth";
 import { slugify } from "../../../../lib/utils";
 
-const toText = (value) =>
-  (value || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/\s+/g, " ")
-    .trim();
-
 const id = (p) => p.id;
 
 export async function GET(_req, { params }) {
@@ -49,7 +39,7 @@ export async function PUT(request, { params }) {
       data: {
         title, slug,
         excerpt: (data.excerpt ?? existing.excerpt).trim(),
-        content: data.content !== undefined ? toText(data.content) : existing.content,
+        content: data.content !== undefined ? (data.content || "").trim() : existing.content,
         coverImage: (data.coverImage ?? existing.coverImage).trim(),
         category: (data.category ?? existing.category).trim(),
         author: (data.author ?? existing.author).trim(),
