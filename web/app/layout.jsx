@@ -9,16 +9,34 @@ import { site } from "../lib/site";
 export const metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    default: `${site.name} - ${site.tagline}`,
     template: `%s · ${site.name}`,
   },
   description: site.description,
   keywords: [
-    "developer tools", "free online tools", "json formatter", "base64",
-    "AI tools", "learn to code", "resume builder", "SEO tools", "programming blog",
+    "developer tools",
+    "free online tools",
+    "json formatter",
+    "base64",
+    "AI tools",
+    "learn to code",
+    "resume builder",
+    "SEO tools",
+    "programming blog",
   ],
-  openGraph: { title: site.name, description: site.description, url: site.url, siteName: site.name, type: "website" },
-  twitter: { card: "summary_large_image", title: site.name, description: site.description },
+  alternates: { canonical: site.url },
+  openGraph: {
+    title: site.name,
+    description: site.description,
+    url: site.url,
+    siteName: site.name,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.name,
+    description: site.description,
+  },
   robots: { index: true, follow: true },
 };
 

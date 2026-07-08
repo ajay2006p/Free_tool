@@ -19,12 +19,12 @@ export function generateMetadata({ params }) {
   const found = getService(params.category, params.tool);
   if (!found) return { title: "Not found" };
   const { category, service } = found;
-  const title = `${service.name} — free online ${service.name.toLowerCase()}`;
+  const title = `${service.name} - free online ${service.name.toLowerCase()}`;
   return {
     title,
-    description: `${service.desc} Free ${service.name} on ${site.name} — fast, private and no signup.`,
+    description: `${service.desc} Free ${service.name} on ${site.name} - fast, private and no signup.`,
     alternates: { canonical: `${site.url}/${category.slug}/${service.slug}` },
-    openGraph: { title, description: service.desc, type: "website" },
+    openGraph: { title, description: service.desc, type: "website", url: `${site.url}/${category.slug}/${service.slug}` },
   };
 }
 
@@ -54,7 +54,9 @@ export default function ServicePage({ params }) {
 
       <div>
         <h1 style={{ fontSize: 34, margin: 0 }}>{service.name}</h1>
-        <p className="muted" style={{ fontFamily: "var(--sans)", margin: "6px 0 0" }}>{service.desc}</p>
+        <p className="muted" style={{ fontFamily: "var(--sans)", margin: "6px 0 0" }}>
+          {service.desc}
+        </p>
       </div>
 
       <AdSlot label="Banner" />
@@ -69,24 +71,32 @@ export default function ServicePage({ params }) {
         </div>
       ) : (
         <div className="sheet center" style={{ padding: 40 }}>
-          <p className="muted" style={{ fontFamily: "var(--sans)" }}>This tool isn't available.</p>
-          <Link href="/services" className="btn">Browse all tools →</Link>
+          <p className="muted" style={{ fontFamily: "var(--sans)" }}>
+            This tool isn't available.
+          </p>
+          <Link href="/services" className="btn">
+            Browse all tools →
+          </Link>
         </div>
       )}
 
-      {/* Related in the same category */}
       <section className="section">
-        <div className="cat-row"><h2 style={{ fontSize: 20 }}>More {category.name}</h2></div>
+        <div className="cat-row">
+          <h2 style={{ fontSize: 20 }}>More {category.name}</h2>
+        </div>
         <div className="tool-grid">
-          {category.services.filter((s) => s.slug !== service.slug).slice(0, 8).map((s) => (
-            <Link key={s.slug} href={`/${category.slug}/${s.slug}`} className="tool-card">
-              <span className="tc-icon">{toolIcon(s.slug, category.icon)}</span>
-              <span className="tc-body">
-                <span className="tool-name">{s.name}</span>
-                <span className="tool-desc">{s.desc}</span>
-              </span>
-            </Link>
-          ))}
+          {category.services
+            .filter((s) => s.slug !== service.slug)
+            .slice(0, 8)
+            .map((s) => (
+              <Link key={s.slug} href={`/${category.slug}/${s.slug}`} className="tool-card">
+                <span className="tc-icon">{toolIcon(s.slug, category.icon)}</span>
+                <span className="tc-body">
+                  <span className="tool-name">{s.name}</span>
+                  <span className="tool-desc">{s.desc}</span>
+                </span>
+              </Link>
+            ))}
         </div>
       </section>
 

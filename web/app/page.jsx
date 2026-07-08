@@ -1,14 +1,20 @@
 import Link from "next/link";
 import { prisma } from "../lib/db";
 import { visibleCategories, countTotal } from "../lib/catalog";
-import { formatDate } from "../lib/utils";
 import AdSlot from "../components/AdSlot";
 import ToolSearch from "../components/ToolSearch";
 import HeroShowcase from "../components/HeroShowcase";
 import BlogCard from "../components/BlogCard";
 import NativeAd from "../components/NativeAd";
+import { site } from "../lib/site";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: `${site.name} - Free tools, SEO, and productivity apps`,
+  description: site.description,
+  alternates: { canonical: site.url },
+};
 
 const POPULAR = [
   ["📄 Resume Builder", "/career/resume-builder"],
@@ -21,23 +27,55 @@ const POPULAR = [
 ];
 
 async function getLatestPosts() {
-  try { return await prisma.post.findMany({ where: { published: true }, orderBy: { createdAt: "desc" }, take: 3 }); }
-  catch (e) { return []; }
+  try {
+    return await prisma.post.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    });
+  } catch (e) {
+    return [];
+  }
 }
 
 export default async function HomePage() {
   const posts = await getLatestPosts();
   const total = countTotal();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: site.name,
+    url: site.url,
+    description: site.description,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${site.url}/services?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="hero hero-split container">
         <div className="hero-copy">
           <span className="kicker">{total} free tools · no signup</span>
-          <h1>Every tool you need,<br /><span className="mark">in one place.</span></h1>
-          <p className="lead">Formatters, converters, calculators, SEO & social media helpers and productivity apps — free, fast, and private in your browser.</p>
+          <h1>
+            Every tool you need,
+            <br />
+            <span className="mark">in one place.</span>
+          </h1>
+          <p className="lead">
+            Formatters, converters, calculators, SEO & social media helpers and
+            productivity apps - free, fast, and private in your browser.
+          </p>
           <div className="chips">
-            {POPULAR.map(([label, href]) => <Link key={href} href={href} className="chip">{label}</Link>)}
+            {POPULAR.map(([label, href]) => (
+              <Link key={href} href={href} className="chip">
+                {label}
+              </Link>
+            ))}
           </div>
         </div>
         <HeroShowcase />
@@ -47,22 +85,33 @@ export default async function HomePage() {
         <ToolSearch categories={visibleCategories} />
       </section>
 
-      <div className="container"><AdSlot label="Banner" /></div>
+      <div className="container">
+        <AdSlot label="Banner" />
+      </div>
 
       <NativeAd />
 
       <section className="section container">
-        <div className="section-head"><h2>From the blog</h2><Link href="/blog" className="btn btn-outline btn-sm">All posts</Link></div>
+        <div className="section-head">
+          <h2>From the blog</h2>
+          <Link href="/blog" className="btn btn-outline btn-sm">
+            All posts
+          </Link>
+        </div>
         {posts.length === 0 ? (
           <div className="sheet empty">No posts yet.</div>
         ) : (
           <div className="blog-grid">
-            {posts.map((p) => <BlogCard key={p.id} post={p} />)}
+            {posts.map((p) => (
+              <BlogCard key={p.id} post={p} />
+            ))}
           </div>
         )}
       </section>
 
-      <div className="container"><AdSlot label="Footer banner" /></div>
+      <div className="container">
+        <AdSlot label="Footer banner" />
+      </div>
     </>
   );
 }

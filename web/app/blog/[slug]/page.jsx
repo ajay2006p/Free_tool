@@ -12,8 +12,11 @@ const looksLikeHtml = (s) => /<\/?[a-z][\s\S]*>/i.test(s);
 const toHtml = (s) => (!s ? "" : looksLikeHtml(s) ? s : marked.parse(s));
 
 async function getPost(slug) {
-  try { return await prisma.post.findUnique({ where: { slug } }); }
-  catch (e) { return null; }
+  try {
+    return await prisma.post.findUnique({ where: { slug } });
+  } catch (e) {
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }) {
@@ -23,7 +26,13 @@ export async function generateMetadata({ params }) {
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `${site.url}/blog/${post.slug}` },
-    openGraph: { title: post.title, description: post.excerpt, type: "article", images: post.coverImage ? [post.coverImage] : [] },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      url: `${site.url}/blog/${post.slug}`,
+      images: post.coverImage ? [post.coverImage] : [],
+    },
   };
 }
 
@@ -35,8 +44,10 @@ export default async function PostPage({ params }) {
   const html = toHtml(post.content || "");
 
   const jsonLd = {
-    "@context": "https://schema.org", "@type": "BlogPosting",
-    headline: post.title, description: post.excerpt,
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
     author: { "@type": "Person", name: post.author },
     datePublished: new Date(post.createdAt).toISOString(),
     dateModified: new Date(post.updatedAt).toISOString(),
@@ -46,15 +57,32 @@ export default async function PostPage({ params }) {
   return (
     <article className="container container-narrow article">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="crumbs"><Link href="/">Home</Link> / <Link href="/blog">Blog</Link> / {post.category}</div>
-      <div><span className="badge badge-cat">{post.category}</span></div>
+      <div className="crumbs">
+        <Link href="/">Home</Link> / <Link href="/blog">Blog</Link> / {post.category}
+      </div>
+      <div>
+        <span className="badge badge-cat">{post.category}</span>
+      </div>
       <h1>{post.title}</h1>
-      <div className="meta">By {post.author} · {formatDate(post.createdAt)} · {readingTime(post.content)} min read</div>
-      {post.coverImage ? <img className="cover" style={{ height: "auto", maxHeight: 420, marginTop: 18 }} src={post.coverImage} alt={post.title} /> : null}
+      <div className="meta">
+        By {post.author} · {formatDate(post.createdAt)} · {readingTime(post.content)} min read
+      </div>
+      {post.coverImage ? (
+        <img
+          className="cover"
+          style={{ height: "auto", maxHeight: 420, marginTop: 18 }}
+          src={post.coverImage}
+          alt={post.title}
+        />
+      ) : null}
       <AdSlot label="Top of article" />
       <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
       <AdSlot label="End of article" />
-      <div className="center mt-4"><Link href="/blog" className="btn btn-outline">← More articles</Link></div>
+      <div className="center mt-4">
+        <Link href="/blog" className="btn btn-outline">
+          ← More articles
+        </Link>
+      </div>
     </article>
   );
 }
