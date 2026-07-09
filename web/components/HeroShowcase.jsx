@@ -39,7 +39,7 @@ export default function HeroShowcase() {
           <span className="hs-dot" style={{ background: "#ff5f57" }} />
           <span className="hs-dot" style={{ background: "#febc2e" }} />
           <span className="hs-dot" style={{ background: "#28c840" }} />
-          <span className="hs-url">alltools.app<span className="hs-cursor" /></span>
+          <span className="hs-url">https://www.freetoolss.online<span className="hs-cursor" /></span>
         </div>
 
         <div className="hs-tabs">
