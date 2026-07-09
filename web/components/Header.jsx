@@ -3,15 +3,19 @@ import { site } from "../lib/site";
 import { visibleCategories, allTools } from "../lib/catalog";
 import SearchBox from "./SearchBox";
 import UserMenu from "./UserMenu";
+import Logo from "./Logo";
 
-const NAV = ["files", "convert", "calculators", "tools", "image"];
+const NAV = ["ai", "files", "convert", "calculators", "tools", "image"];
 
 export default function Header() {
   const links = NAV.map((slug) => visibleCategories.find((c) => c.slug === slug)).filter(Boolean);
   return (
     <header className="site-header">
       <div className="container inner">
-        <Link href="/" className="brand">{site.name}<span className="dot">.</span></Link>
+        <Link href="/" className="brand" aria-label={`${site.name} home`}>
+          <Logo size={30} />
+          <span style={{ marginLeft: 9 }}>{site.name}<span className="dot">.</span></span>
+        </Link>
         <SearchBox tools={allTools} placeholder="Search tools — try “resume builder”…" />
         <nav className="nav">
           {links.map((c) => (

@@ -25,8 +25,8 @@ export function TextDiff() {
       <div className="sheet" style={{ padding: 12, fontFamily: "var(--mono)", fontSize: 13 }}>
         {rows.map((r) => (
           <div key={r.i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, background: r.same ? "transparent" : "var(--accent-soft)", padding: "1px 4px" }}>
-            <span style={{ color: r.same ? "var(--ink-faint)" : "var(--accent)" }}>{r.left || "·"}</span>
-            <span style={{ color: r.same ? "var(--ink-faint)" : "var(--accent-2)" }}>{r.right || "·"}</span>
+            <span style={{ color: r.same ? "var(--ink-faint)" : "var(--accent)", minWidth: 0, overflowWrap: "anywhere" }}>{r.left || "·"}</span>
+            <span style={{ color: r.same ? "var(--ink-faint)" : "var(--accent-2)", minWidth: 0, overflowWrap: "anywhere" }}>{r.right || "·"}</span>
           </div>
         ))}
       </div>

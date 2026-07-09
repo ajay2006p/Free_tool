@@ -2,13 +2,18 @@
 // individually-searchable conversion pages (great for SEO / long-tail traffic).
 
 export const UNITS = {
-  length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, yd: 0.9144, ft: 0.3048, in: 0.0254 },
+  length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, yd: 0.9144, ft: 0.3048, in: 0.0254, nmi: 1852 },
   weight: { kg: 1, g: 0.001, mg: 0.000001, lb: 0.45359237, oz: 0.028349523, t: 1000, st: 6.35029318 },
   data: { B: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1099511627776 },
   speed: { "m/s": 1, "km/h": 0.2777778, mph: 0.44704, knot: 0.5144444, "ft/s": 0.3048 },
-  volume: { L: 1, mL: 0.001, gal: 3.785411784, qt: 0.946352946, cup: 0.2365882365, floz: 0.0295735296, m3: 1000 },
+  volume: { L: 1, mL: 0.001, gal: 3.785411784, qt: 0.946352946, pt: 0.473176473, cup: 0.2365882365, floz: 0.0295735296, tbsp: 0.0147867648, tsp: 0.0049289216, m3: 1000 },
   area: { m2: 1, km2: 1e6, cm2: 0.0001, ft2: 0.09290304, in2: 0.00064516, acre: 4046.8564224, ha: 10000, mi2: 2589988.11 },
   time: { s: 1, min: 60, h: 3600, day: 86400, week: 604800, year: 31557600 },
+  pressure: { Pa: 1, kPa: 1000, bar: 100000, psi: 6894.757293, atm: 101325, mmHg: 133.322387 },
+  energy: { J: 1, kJ: 1000, cal: 4.184, kcal: 4184, Wh: 3600, kWh: 3600000, BTU: 1055.05585 },
+  power: { W: 1, kW: 1000, MW: 1e6, hp: 745.699872, PS: 735.49875 },
+  angle: { deg: 1, rad: 57.29577951, grad: 0.9, turn: 360 },
+  frequency: { Hz: 1, kHz: 1000, MHz: 1e6, GHz: 1e9 },
 };
 
 export function convert(value, from, to, dim) {
@@ -83,6 +88,69 @@ const P = [
   ["days-to-hours", "time", "day", "h", "Days", "Hours", "d", "h"],
   ["weeks-to-days", "time", "week", "day", "Weeks", "Days", "wk", "d"],
   ["years-to-days", "time", "year", "day", "Years", "Days", "yr", "d"],
+
+  // --- expanded long-tail conversion pages ---
+  ["mm-to-cm", "length", "mm", "cm", "Millimeters", "Centimeters", "mm", "cm"],
+  ["cm-to-mm", "length", "cm", "mm", "Centimeters", "Millimeters", "cm", "mm"],
+  ["m-to-cm", "length", "m", "cm", "Meters", "Centimeters", "m", "cm"],
+  ["feet-to-cm", "length", "ft", "cm", "Feet", "Centimeters", "ft", "cm"],
+  ["cm-to-meters", "length", "cm", "m", "Centimeters", "Meters", "cm", "m"],
+  ["miles-to-feet", "length", "mi", "ft", "Miles", "Feet", "mi", "ft"],
+  ["yards-to-feet", "length", "yd", "ft", "Yards", "Feet", "yd", "ft"],
+  ["inches-to-meters", "length", "in", "m", "Inches", "Meters", "in", "m"],
+  ["nautical-miles-to-km", "length", "nmi", "km", "Nautical Miles", "Kilometers", "nmi", "km"],
+
+  ["grams-to-kg", "weight", "g", "kg", "Grams", "Kilograms", "g", "kg"],
+  ["ounces-to-pounds", "weight", "oz", "lb", "Ounces", "Pounds", "oz", "lb"],
+  ["mg-to-grams", "weight", "mg", "g", "Milligrams", "Grams", "mg", "g"],
+  ["kg-to-stones", "weight", "kg", "st", "Kilograms", "Stones", "kg", "st"],
+  ["pounds-to-grams", "weight", "lb", "g", "Pounds", "Grams", "lb", "g"],
+
+  ["fahrenheit-to-kelvin", "temperature", "f", "k", "Fahrenheit", "Kelvin", "°F", "K"],
+  ["kelvin-to-fahrenheit", "temperature", "k", "f", "Kelvin", "Fahrenheit", "K", "°F"],
+
+  ["kb-to-gb", "data", "KB", "GB", "Kilobytes", "Gigabytes", "KB", "GB"],
+  ["tb-to-mb", "data", "TB", "MB", "Terabytes", "Megabytes", "TB", "MB"],
+  ["bytes-to-kb", "data", "B", "KB", "Bytes", "Kilobytes", "B", "KB"],
+
+  ["mph-to-ms", "speed", "mph", "m/s", "mph", "m/s", "mph", "m/s"],
+  ["kmh-to-ms", "speed", "km/h", "m/s", "km/h", "m/s", "km/h", "m/s"],
+  ["knots-to-mph", "speed", "knot", "mph", "Knots", "mph", "kn", "mph"],
+
+  ["gallons-to-ml", "volume", "gal", "mL", "Gallons", "Milliliters", "gal", "mL"],
+  ["tbsp-to-tsp", "volume", "tbsp", "tsp", "Tablespoons", "Teaspoons", "tbsp", "tsp"],
+  ["cups-to-tbsp", "volume", "cup", "tbsp", "Cups", "Tablespoons", "cup", "tbsp"],
+  ["floz-to-ml", "volume", "floz", "mL", "Fluid Ounces", "Milliliters", "fl oz", "mL"],
+  ["pints-to-liters", "volume", "pt", "L", "Pints", "Liters", "pt", "L"],
+  ["quarts-to-liters", "volume", "qt", "L", "Quarts", "Liters", "qt", "L"],
+
+  ["sqkm-to-sqmi", "area", "km2", "mi2", "Square Kilometers", "Square Miles", "km²", "mi²"],
+  ["acres-to-hectares", "area", "acre", "ha", "Acres", "Hectares", "ac", "ha"],
+  ["sqft-to-acres", "area", "ft2", "acre", "Square Feet", "Acres", "ft²", "ac"],
+
+  ["minutes-to-hours", "time", "min", "h", "Minutes", "Hours", "min", "h"],
+  ["seconds-to-minutes", "time", "s", "min", "Seconds", "Minutes", "s", "min"],
+  ["days-to-weeks", "time", "day", "week", "Days", "Weeks", "d", "wk"],
+  ["hours-to-days", "time", "h", "day", "Hours", "Days", "h", "d"],
+
+  ["psi-to-bar", "pressure", "psi", "bar", "PSI", "Bar", "psi", "bar"],
+  ["bar-to-psi", "pressure", "bar", "psi", "Bar", "PSI", "bar", "psi"],
+  ["kpa-to-psi", "pressure", "kPa", "psi", "Kilopascals", "PSI", "kPa", "psi"],
+  ["atm-to-psi", "pressure", "atm", "psi", "Atmospheres", "PSI", "atm", "psi"],
+
+  ["kj-to-cal", "energy", "kJ", "cal", "Kilojoules", "Calories", "kJ", "cal"],
+  ["kcal-to-kj", "energy", "kcal", "kJ", "Kilocalories", "Kilojoules", "kcal", "kJ"],
+  ["kwh-to-joules", "energy", "kWh", "J", "Kilowatt-hours", "Joules", "kWh", "J"],
+
+  ["hp-to-kw", "power", "hp", "kW", "Horsepower", "Kilowatts", "hp", "kW"],
+  ["kw-to-hp", "power", "kW", "hp", "Kilowatts", "Horsepower", "kW", "hp"],
+  ["watts-to-hp", "power", "W", "hp", "Watts", "Horsepower", "W", "hp"],
+
+  ["degrees-to-radians", "angle", "deg", "rad", "Degrees", "Radians", "°", "rad"],
+  ["radians-to-degrees", "angle", "rad", "deg", "Radians", "Degrees", "rad", "°"],
+
+  ["ghz-to-mhz", "frequency", "GHz", "MHz", "Gigahertz", "Megahertz", "GHz", "MHz"],
+  ["mhz-to-hz", "frequency", "MHz", "Hz", "Megahertz", "Hertz", "MHz", "Hz"],
 ];
 
 export const PAIRS = P.map(([slug, dim, from, to, fromLabel, toLabel, fu, tu]) => ({ slug, dim, from, to, fromLabel, toLabel, fu, tu }));

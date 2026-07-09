@@ -24,3 +24,6 @@ npm-debug.log*
 # logs & backups
 *.log
 *.bak
+
+# yt-dl player-script cache dumped by the video-downloader at runtime
+*-player-script.js

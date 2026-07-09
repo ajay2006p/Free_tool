@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CopyButton from "../CopyButton";
 
 /* ---------------- Unit Converter ---------------- */
@@ -101,10 +101,13 @@ export function RomanNumeralConverter() {
 
 /* ---------------- Timestamp Converter ---------------- */
 export function TimestampConverter() {
-  const [ts, setTs] = useState(String(Math.floor(Date.now() / 1000)));
+  // Empty on the server; filled with the current time on the client after mount
+  // so Date.now() never causes a hydration mismatch.
+  const [ts, setTs] = useState("");
   const [dt, setDt] = useState("");
+  useEffect(() => { setTs((v) => v || String(Math.floor(Date.now() / 1000))); }, []);
   const date = new Date(Number(ts) * 1000);
-  const valid = !isNaN(date);
+  const valid = ts.trim() !== "" && !isNaN(date);
   return (
     <div className="tool">
       <div className="tool-controls"><button className="btn btn-sm" onClick={() => setTs(String(Math.floor(Date.now() / 1000)))}>Use current time</button></div>
@@ -116,7 +119,7 @@ export function TimestampConverter() {
           <div className="sheet flex-between" style={{ padding: "10px 14px", marginBottom: 8 }}><span>UTC / ISO</span><span className="mono-out">{date.toISOString()} <CopyButton value={date.toISOString()} /></span></div>
           <div className="sheet flex-between" style={{ padding: "10px 14px" }}><span>Milliseconds</span><span className="mono-out">{Number(ts) * 1000}</span></div>
         </div>
-      ) : <p className="result-err hint">✗ Invalid timestamp.</p>}
+      ) : ts.trim() === "" ? <p className="hint">Enter a Unix timestamp above.</p> : <p className="result-err hint">✗ Invalid timestamp.</p>}
       <label className="fld" style={{ marginTop: 14 }}>Or pick a date → timestamp</label>
       <input className="input" type="datetime-local" value={dt} onChange={(e) => { setDt(e.target.value); const d = new Date(e.target.value); if (!isNaN(d)) setTs(String(Math.floor(d.getTime() / 1000))); }} />
     </div>

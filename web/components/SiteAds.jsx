@@ -1,21 +1,14 @@
-"use client";
-
-import Script from "next/script";
-
-// Site-wide Adsterra units that inject themselves (Social Bar / Pop-under).
-// Loaded once on every page via the root layout. They only serve real ads on
-// the live, approved domain — not on localhost.
+// REMOVED: site-wide pop-under / social-bar ads.
+//
+// These loaded through effectivecpmnetwork.com (an Adsterra "pop" network) that
+// served intrusive, scam-style overlays ("your account was hacked" fake alerts).
+// That is a direct Google Safe Browsing + ad-quality / manual-action risk and
+// erodes user trust, so it has been deleted entirely.
+//
+// This component is now a permanent no-op, kept only so existing imports never
+// break. Do NOT re-add pop/interstitial ad scripts here. If you ever monetise,
+// use a reputable in-page network (e.g. Google AdSense) via the AdSlot admin
+// "custom code" path instead.
 export default function SiteAds() {
-  return (
-    <>
-      <Script
-        src="https://pl30224168.effectivecpmnetwork.com/10/db/b1/10dbb1c350f3f01eede07b24af4245c7.js"
-        strategy="afterInteractive"
-      />
-      <Script
-        src="https://pl30224171.effectivecpmnetwork.com/bb/e0/ab/bbe0ab20c793cd22b9a64b1d5a1951b3.js"
-        strategy="afterInteractive"
-      />
-    </>
-  );
+  return null;
 }

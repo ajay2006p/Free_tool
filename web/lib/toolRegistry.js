@@ -30,6 +30,17 @@ import { ScreenRecorder, KeywordDensity } from "../components/tools/media";
 import { SipCalculator, IncomeTaxCalculator, GstCalculator, DateCalculator } from "../components/tools/finance";
 import { UrlShortener } from "../components/tools/urlshortener";
 import { SocialMediaDownloader } from "../components/tools/socialdownload";
+import { ImageToText } from "../components/tools/ocr";
+import { BarcodeGenerator } from "../components/tools/barcode";
+import { JsonToTypescript, CronExplainer, HtmlMarkdown } from "../components/tools/codegen";
+import { SpeechToText } from "../components/tools/speech";
+import { CurrencyConverter } from "../components/tools/money";
+import { PasswordStrength, EmojiPicker } from "../components/tools/extras";
+import { FaviconGenerator, MemeGenerator, ColorPaletteFromImage, TextToHandwriting, PlaceholderImage } from "../components/tools/imagetools2";
+import { WeddingHashtag } from "../components/tools/wedding";
+import { ResumeTemplateBuilder } from "../components/tools/resumeTemplates";
+import { AiAssistant } from "../components/tools/assistant";
+import { AiCoverLetter, ResumeBulletGenerator, AiEmailWriter, BusinessNameGenerator, SloganGenerator } from "../components/tools/aitools";
 
 export const toolRegistry = {
   // Developer tools
@@ -60,11 +71,22 @@ export const toolRegistry = {
   "tools/spin-wheel": SpinWheel,
   "tools/color-contrast": ColorContrast,
   "tools/url-shortener": UrlShortener,
+  "tools/barcode-generator": BarcodeGenerator,
+  "tools/json-to-typescript": JsonToTypescript,
+  "tools/cron-expression": CronExplainer,
+  "tools/html-to-markdown": HtmlMarkdown,
+  "tools/password-strength": PasswordStrength,
   // Image
   "image/image-resizer": ImageResizer,
   "image/image-cropper": ImageCropper,
   "image/image-compressor": ImageCompressor,
   "image/image-to-base64": ImageToBase64,
+  "image/image-to-text": ImageToText,
+  "image/favicon-generator": FaviconGenerator,
+  "image/meme-generator": MemeGenerator,
+  "image/color-palette": ColorPaletteFromImage,
+  "image/text-to-handwriting": TextToHandwriting,
+  "image/placeholder-image": PlaceholderImage,
   // Games
   "games/game-2048": Game2048,
   "games/snake": SnakeGame,
@@ -88,6 +110,8 @@ export const toolRegistry = {
   "text/find-replace": FindReplace,
   "text/text-repeater": TextRepeater,
   "text/text-to-speech": TextToSpeech,
+  "text/speech-to-text": SpeechToText,
+  "text/emoji-picker": EmojiPicker,
   "text/prompt-optimizer": PromptOptimizer,
   // Calculators
   "calculators/percentage-calculator": PercentageCalculator,
@@ -111,6 +135,7 @@ export const toolRegistry = {
   "converters/roman-numeral-converter": RomanNumeralConverter,
   "converters/timestamp-converter": TimestampConverter,
   "converters/morse-code": MorseCode,
+  "converters/currency-converter": CurrencyConverter,
   // SEO
   "seo/meta-tag-generator": MetaTagGenerator,
   "seo/open-graph-generator": OpenGraphGenerator,
@@ -135,6 +160,7 @@ export const toolRegistry = {
   "productivity/typing-test": TypingTest,
   // Career
   "career/resume-builder": ResumeBuilder,
+  "career/resume-template-builder": ResumeTemplateBuilder,
   "career/cover-letter": CoverLetterBuilder,
   "career/salary-calculator": SalaryCalculator,
   // Freelance
@@ -148,6 +174,14 @@ export const toolRegistry = {
   "social/youtube-embed": YoutubeEmbed,
   "social/social-character-counter": SocialCharacterCounter,
   "social/utm-builder": UtmBuilder,
+  "social/wedding-hashtag-generator": WeddingHashtag,
+  // AI Tools (free, no API key)
+  "ai/ai-assistant": AiAssistant,
+  "ai/ai-cover-letter": AiCoverLetter,
+  "ai/resume-bullet-generator": ResumeBulletGenerator,
+  "ai/ai-email-writer": AiEmailWriter,
+  "ai/business-name-generator": BusinessNameGenerator,
+  "ai/slogan-generator": SloganGenerator,
 };
 
 export function getTool(categorySlug, serviceSlug) {

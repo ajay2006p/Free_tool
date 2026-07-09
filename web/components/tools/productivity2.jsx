@@ -59,7 +59,10 @@ const PASSAGES = [
   "Good code is simple, readable, and honest about what it does and what it cannot yet do well.",
 ];
 export function TypingTest() {
-  const [text] = useState(() => PASSAGES[Math.floor(Math.random() * PASSAGES.length)]);
+  // Deterministic passage on the server; a random one is picked on the client
+  // after mount so the markup matches during hydration.
+  const [text, setText] = useState(PASSAGES[0]);
+  useEffect(() => { setText(PASSAGES[Math.floor(Math.random() * PASSAGES.length)]); }, []);
   const [input, setInput] = useState("");
   const [start, setStart] = useState(null);
   const [endT, setEndT] = useState(null);

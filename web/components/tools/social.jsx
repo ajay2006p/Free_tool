@@ -88,7 +88,10 @@ export function YoutubeThumbnail() {
               <div key={key} className="sheet" style={{ padding: 12 }}>
                 <div className="hint" style={{ margin: "0 0 6px" }}>{label}</div>
                 <img src={src} alt={label} style={{ width: "100%", borderRadius: 6, border: "1px solid var(--line)" }} />
-                <div style={{ marginTop: 8 }}><a className="btn btn-sm btn-outline" href={src} target="_blank" rel="noreferrer">Open / download</a></div>
+                <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <a className="btn btn-sm" href={`/api/download-image?url=${encodeURIComponent(src)}&name=thumbnail-${id}-${key}.jpg`}>⬇ Download</a>
+                  <a className="btn btn-sm btn-outline" href={src} target="_blank" rel="noreferrer">Open</a>
+                </div>
               </div>
             );
           })}

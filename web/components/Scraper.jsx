@@ -38,7 +38,7 @@ export default function Scraper() {
   if (user === undefined) return <div className="sheet empty">Loading…</div>;
   if (!user) {
     return (
-      <div className="sheet center" style={{ padding: 44 }}>
+      <div className="sheet center" style={{ padding: "clamp(24px, 7vw, 44px)" }}>
         <div style={{ fontSize: 44 }}>🔒</div>
         <h2 style={{ fontSize: 24 }}>Log in to use the Business Scraper</h2>
         <p className="muted">Create a free account to search and export business leads.</p>

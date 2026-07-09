@@ -3,7 +3,7 @@ import Script from "next/script";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Analytics from "../components/Analytics";
-import SiteAds from "../components/SiteAds";
+import SiteFrame from "../components/SiteFrame";
 import { site } from "../lib/site";
 
 export const metadata = {
@@ -14,15 +14,17 @@ export const metadata = {
   },
   description: site.description,
   keywords: [
-    "developer tools",
     "free online tools",
+    "developer tools",
     "json formatter",
-    "base64",
-    "AI tools",
-    "learn to code",
+    "password generator",
+    "pdf tools",
+    "image compressor",
+    "unit converter",
+    "online calculators",
+    "seo tools",
     "resume builder",
-    "SEO tools",
-    "programming blog",
+    "qr code generator",
   ],
   alternates: { canonical: site.url },
   openGraph: {
@@ -40,11 +42,33 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
+// Site-wide Organization structured data — tells Google & AI engines who runs
+// the site (counters the hidden-WHOIS trust gap) and can power richer results.
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.name,
+  url: site.url,
+  logo: `${site.url}/icon.png`,
+  image: `${site.url}/icon.png`,
+  description: site.description,
+  email: "anaagathumanpower@gmail.com",
+  foundingDate: "2026",
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "anaagathumanpower@gmail.com",
+    contactType: "customer support",
+    url: `${site.url}/contact`,
+    availableLanguage: "English",
+  },
+};
+
 export default function RootLayout({ children }) {
   const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   return (
     <html lang="en">
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         {adsenseClient ? (
           <Script
             async
@@ -53,11 +77,13 @@ export default function RootLayout({ children }) {
             crossOrigin="anonymous"
           />
         ) : null}
-        <Analytics />
-        <SiteAds />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <SiteFrame
+          header={<Header />}
+          footer={<Footer />}
+          extras={<Analytics />}
+        >
+          {children}
+        </SiteFrame>
       </body>
     </html>
   );

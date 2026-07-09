@@ -37,10 +37,15 @@ function operate(b, dir) {
 }
 const TILE = { 0: "#e9edf5", 2: "#dbe4ff", 4: "#bcd0ff", 8: "#8fb4ff", 16: "#6d9bff", 32: "#4f7cf5", 64: "#4f46e5", 128: "#7c3aed", 256: "#9333ea", 512: "#c026d3", 1024: "#db2777", 2048: "#f59e0b" };
 export function Game2048() {
-  const [board, setBoard] = useState(() => spawn(spawn(empty2048())));
+  // Start from a deterministic empty board so the server and the first client
+  // render match; the two starting tiles are spawned on the client after mount
+  // (spawn() uses Math.random, which would otherwise cause a hydration mismatch).
+  const [board, setBoard] = useState(empty2048);
   const [score, setScore] = useState(0);
   const [best, setBest] = useLocalStorage("dh_2048_best", 0);
   const [over, setOver] = useState(false);
+
+  useEffect(() => { setBoard(spawn(spawn(empty2048()))); }, []);
 
   const move = useCallback((dir) => {
     setBoard((prev) => {
@@ -67,6 +72,18 @@ export function Game2048() {
 
   function reset() { setBoard(spawn(spawn(empty2048()))); setScore(0); setOver(false); }
 
+  // Swipe support so the game is playable on phones (90% of visitors).
+  const touch = useRef(null);
+  const onTouchStart = (e) => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY }; };
+  const onTouchEnd = (e) => {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x, dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+  };
+
   return (
     <div className="tool center">
       <div className="flex-between" style={{ maxWidth: 340, margin: "0 auto 12px" }}>
@@ -74,13 +91,13 @@ export function Game2048() {
         <div className="sheet" style={{ padding: "8px 16px" }}><div className="hint" style={{ margin: 0 }}>BEST</div><strong style={{ fontSize: 20 }}>{best}</strong></div>
         <button className="btn btn-sm" onClick={reset}>New game</button>
       </div>
-      <div style={{ position: "relative", width: "min(340px, 88vw)", margin: "0 auto", background: "#c7cede", borderRadius: 12, padding: 8, display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, aspectRatio: "1" }}>
+      <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ position: "relative", width: "min(340px, 88vw)", margin: "0 auto", background: "#c7cede", borderRadius: 12, padding: 8, display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, aspectRatio: "1", touchAction: "none" }}>
         {board.flat().map((v, i) => (
           <div key={i} style={{ background: TILE[v] || "#f59e0b", borderRadius: 8, display: "grid", placeItems: "center", fontWeight: 800, fontSize: v >= 1024 ? 20 : 26, color: v >= 8 ? "#fff" : "#334155" }}>{v || ""}</div>
         ))}
         {over ? <div style={{ position: "absolute", inset: 8, background: "rgba(255,255,255,.8)", borderRadius: 8, display: "grid", placeItems: "center" }}><div><h3>Game over</h3><button className="btn btn-sm" onClick={reset}>Try again</button></div></div> : null}
       </div>
-      <p className="hint">Use arrow keys (or W A S D). Combine tiles to reach 2048!</p>
+      <p className="hint">Swipe, use the pad below, or arrow keys / W A S D. Combine tiles to reach 2048!</p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,52px)", gap: 6, justifyContent: "center", marginTop: 6 }}>
         <span /><button className="btn btn-outline btn-sm" onClick={() => move("up")}>↑</button><span />
         <button className="btn btn-outline btn-sm" onClick={() => move("left")}>←</button>
@@ -116,6 +133,25 @@ export function SnakeGame() {
     dir.current = { x: 1, y: 0 }; nextDir.current = { x: 1, y: 0 }; setRunning(true);
   }, [randFood]);
 
+  // Shared steering used by keyboard, swipe and the on-screen D-pad.
+  const turn = useCallback((map) => {
+    const cur = dir.current;
+    if (map.x === -cur.x && map.y === -cur.y) return; // no reverse into yourself
+    nextDir.current = map;
+  }, []);
+
+  // Swipe support so Snake is playable on touch devices (no keyboard).
+  const touch = useRef(null);
+  const onTouchStart = (e) => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY }; };
+  const onTouchEnd = (e) => {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x, dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+    turn(Math.abs(dx) > Math.abs(dy) ? { x: dx > 0 ? 1 : -1, y: 0 } : { x: 0, y: dy > 0 ? 1 : -1 });
+  };
+
   useEffect(() => {
     if (!running) return;
     const id = setInterval(() => {
@@ -140,13 +176,11 @@ export function SnakeGame() {
       const map = { ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 }, ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 }, w: { x: 0, y: -1 }, s: { x: 0, y: 1 }, a: { x: -1, y: 0 }, d: { x: 1, y: 0 } }[e.key];
       if (!map) return;
       e.preventDefault();
-      const cur = dir.current;
-      if (map.x === -cur.x && map.y === -cur.y) return; // no reverse
-      nextDir.current = map;
+      turn(map);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [turn]);
 
   const cell = (x, y) => snake.some((s) => s.x === x && s.y === y) ? (snake[0].x === x && snake[0].y === y ? "#4338ca" : "#4f46e5") : (food.x === x && food.y === y ? "#e11d48" : "transparent");
 
@@ -156,7 +190,7 @@ export function SnakeGame() {
         <strong>Score: {score}</strong><strong className="muted">Best: {best}</strong>
         <button className="btn btn-sm" onClick={reset}>{running ? "Restart" : "Start"}</button>
       </div>
-      <div style={{ width: "min(360px,88vw)", margin: "0 auto", aspectRatio: "1", background: "#eef1f7", border: "1px solid var(--border)", borderRadius: 10, display: "grid", gridTemplateColumns: `repeat(${N},1fr)`, gap: 1, padding: 4, position: "relative" }}>
+      <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ width: "min(360px,88vw)", margin: "0 auto", aspectRatio: "1", background: "#eef1f7", border: "1px solid var(--border)", borderRadius: 10, display: "grid", gridTemplateColumns: `repeat(${N},1fr)`, gap: 1, padding: 4, position: "relative", touchAction: "none" }}>
         {Array.from({ length: N * N }).map((_, i) => {
           const x = i % N, y = Math.floor(i / N);
           return <div key={i} style={{ background: cell(x, y), borderRadius: 3 }} />;
@@ -164,7 +198,13 @@ export function SnakeGame() {
         {!running && !over ? <div style={{ position: "absolute", inset: 4, background: "rgba(255,255,255,.85)", display: "grid", placeItems: "center", borderRadius: 8 }}><button className="btn" onClick={reset}>▶ Start</button></div> : null}
         {over ? <div style={{ position: "absolute", inset: 4, background: "rgba(255,255,255,.85)", display: "grid", placeItems: "center", borderRadius: 8 }}><div><h3>Game over — {score}</h3><button className="btn btn-sm" onClick={reset}>Play again</button></div></div> : null}
       </div>
-      <p className="hint">Arrow keys or W A S D. Eat the red food, don't hit walls or yourself.</p>
+      <p className="hint">Swipe the board, use the pad below, or arrow keys / W A S D.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,52px)", gap: 6, justifyContent: "center", marginTop: 6 }}>
+        <span /><button className="btn btn-outline btn-sm" onClick={() => turn({ x: 0, y: -1 })}>↑</button><span />
+        <button className="btn btn-outline btn-sm" onClick={() => turn({ x: -1, y: 0 })}>←</button>
+        <button className="btn btn-outline btn-sm" onClick={() => turn({ x: 0, y: 1 })}>↓</button>
+        <button className="btn btn-outline btn-sm" onClick={() => turn({ x: 1, y: 0 })}>→</button>
+      </div>
     </div>
   );
 }
@@ -215,10 +255,10 @@ export function TicTacToe() {
       <p style={{ fontWeight: 700, fontSize: 18 }}>
         {w === "X" ? "🎉 You win!" : w === "O" ? "🤖 AI wins" : w === "draw" ? "🤝 Draw" : "Your turn (X)"}
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 90px)", gap: 8, justifyContent: "center" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, width: "min(300px, 82vw)", margin: "0 auto" }}>
         {board.map((v, i) => (
           <button key={i} onClick={() => play(i)} disabled={v || w}
-            style={{ width: 90, height: 90, fontSize: 40, fontWeight: 800, borderRadius: 12, border: "1px solid var(--border-strong)", background: "var(--surface)", cursor: v || w ? "default" : "pointer", color: v === "X" ? "var(--accent)" : "var(--red)" }}>
+            style={{ width: "100%", aspectRatio: "1", fontSize: "clamp(30px, 12vw, 40px)", fontWeight: 800, borderRadius: 12, border: "1px solid var(--border-strong)", background: "var(--surface)", cursor: v || w ? "default" : "pointer", color: v === "X" ? "var(--accent)" : "var(--red)" }}>
             {v}
           </button>
         ))}

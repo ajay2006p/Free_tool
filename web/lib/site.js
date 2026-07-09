@@ -1,7 +1,7 @@
 export const site = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "FreeTool",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.freetoolss.online",
-  tagline: "The all-in-one hub for developers, students & founders",
+  tagline: "Free online tools for developers, creators & students",
   description:
-    "Free developer tools, AI helpers, a learning hub, career resources, SEO tools and a blog - one home for building your projects and your career.",
+    "Free online tools in one place - formatters, converters, calculators, PDF & image tools, SEO, social media and productivity apps. Fast, private and no signup.",
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { marked } from "marked";
 import CopyButton from "../CopyButton";
 
@@ -377,11 +377,43 @@ export function MarkdownPreviewer() {
   );
 }
 
-/* ---------------- QR Code Generator ---------------- */
+/* ---------------- QR Code Generator ----------------
+   Renders the QR code entirely in the browser (no third-party API), so it works
+   offline, keeps the encoded text private, and can't break if an outside service
+   goes down. The `qrcode` library is dynamically imported so it only loads on
+   this page and stays out of the shared bundle. */
 export function QrCodeGenerator() {
   const [text, setText] = useState("https://example.com");
   const [size, setSize] = useState(240);
-  const src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+  const [ready, setReady] = useState(false);
+  const [err, setErr] = useState("");
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!text) { setReady(false); return; }
+    (async () => {
+      try {
+        const QRCode = (await import("qrcode")).default;
+        if (cancelled || !canvasRef.current) return;
+        await QRCode.toCanvas(canvasRef.current, text, { width: size, margin: 1, errorCorrectionLevel: "M" });
+        if (!cancelled) { setReady(true); setErr(""); }
+      } catch (e) {
+        if (!cancelled) { setReady(false); setErr("Could not generate a QR code for that input."); }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [text, size]);
+
+  function download() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = "qr-code.png";
+    a.click();
+  }
+
   return (
     <div className="tool">
       <label className="fld">Text or URL</label>
@@ -390,8 +422,17 @@ export function QrCodeGenerator() {
         <label className="chk">Size: {size}px<input type="range" min={120} max={480} step={40} value={size} onChange={(e) => setSize(Number(e.target.value))} /></label>
       </div>
       <div className="center">
-        {text ? <img src={src} alt="QR code" width={size} height={size} style={{ margin: "10px auto", background: "#fff", borderRadius: 8, padding: 10 }} /> : <p className="hint">Enter text to generate a QR code.</p>}
-        <div><a className="btn btn-sm btn-outline" href={src} target="_blank" rel="noreferrer">Open / download image</a></div>
+        {text ? (
+          <canvas ref={canvasRef} role="img" aria-label="QR code" style={{ width: size, maxWidth: "100%", height: "auto", margin: "10px auto", background: "#fff", borderRadius: 8, padding: 10, boxShadow: "var(--shadow-sm)" }} />
+        ) : (
+          <p className="hint">Enter text to generate a QR code.</p>
+        )}
+        {err ? <p className="result-err hint">{err}</p> : null}
+        {text && !err ? (
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+            <button type="button" className="btn btn-sm" onClick={download} disabled={!ready}>⬇ Download PNG</button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

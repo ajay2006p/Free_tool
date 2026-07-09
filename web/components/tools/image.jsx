@@ -86,9 +86,11 @@ export function ImageCropper() {
       });
     }
     function up() { drag.current = null; }
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
-    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); };
+    // Pointer events cover mouse AND touch, so drag-to-crop works on phones.
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    return () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up); };
   }, []);
   function startMove(e) { const im = imgRef.current, rect = im.getBoundingClientRect(); drag.current = { type: "move", px: e.clientX - rect.left, py: e.clientY - rect.top, bx: box.x, by: box.y }; e.preventDefault(); }
   function startResize(e) { drag.current = { type: "resize" }; e.stopPropagation(); e.preventDefault(); }
@@ -106,8 +108,8 @@ export function ImageCropper() {
         <>
           <div ref={wrapRef} style={{ position: "relative", display: "inline-block", marginTop: 12, userSelect: "none", maxWidth: "100%" }}>
             <img ref={imgRef} src={src} onLoad={onLoad} alt="" style={{ maxWidth: "100%", display: "block", borderRadius: 6 }} draggable={false} />
-            <div onMouseDown={startMove} style={{ position: "absolute", left: box.x, top: box.y, width: box.w, height: box.h, border: "2px solid var(--accent)", boxShadow: "0 0 0 9999px rgba(0,0,0,.4)", cursor: "move" }}>
-              <div onMouseDown={startResize} style={{ position: "absolute", right: -8, bottom: -8, width: 16, height: 16, background: "var(--accent)", borderRadius: "50%", cursor: "nwse-resize" }} />
+            <div onPointerDown={startMove} style={{ position: "absolute", left: box.x, top: box.y, width: box.w, height: box.h, border: "2px solid var(--accent)", boxShadow: "0 0 0 9999px rgba(0,0,0,.4)", cursor: "move", touchAction: "none" }}>
+              <div onPointerDown={startResize} style={{ position: "absolute", right: -8, bottom: -8, width: 22, height: 22, background: "var(--accent)", border: "2px solid #fff", borderRadius: "50%", cursor: "nwse-resize", touchAction: "none" }} />
             </div>
           </div>
           <div className="tool-controls" style={{ marginTop: 12 }}><button className="btn btn-sm" onClick={crop}>Crop</button></div>

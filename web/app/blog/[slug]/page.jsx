@@ -11,6 +11,26 @@ export const dynamic = "force-dynamic";
 const looksLikeHtml = (s) => /<\/?[a-z][\s\S]*>/i.test(s);
 const toHtml = (s) => (!s ? "" : looksLikeHtml(s) ? s : marked.parse(s));
 
+// A clean meta description: strip HTML, collapse whitespace, cap near Google's
+// ~155-char truncation point at a word boundary. Prevents the full multi-hundred
+// -char excerpt from being emitted as the <meta description>/og:description.
+function metaDescription(raw, max = 155) {
+  const text = String(raw || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const at = cut.lastIndexOf(" ");
+  return (at > 60 ? cut.slice(0, at) : cut).replace(/[\s,;:.\-]+$/, "") + "…";
+}
+
+// Keep exactly one <h1> per page (the post title, rendered by the page itself).
+// Drop empty headings left by rich-text editors and demote any stray <h1> in the
+// body to <h2> so the document outline stays valid.
+function fixHeadings(html) {
+  return String(html || "")
+    .replace(/<h([1-6])[^>]*>(?:\s|<br\s*\/?>|&nbsp;)*<\/h\1>/gi, "")
+    .replace(/<(\/?)h1(\s[^>]*)?>/gi, (_m, slash, attrs) => `<${slash}h2${attrs || ""}>`);
+}
+
 async function getPost(slug) {
   try {
     return await prisma.post.findUnique({ where: { slug } });
@@ -22,13 +42,14 @@ async function getPost(slug) {
 export async function generateMetadata({ params }) {
   const post = await getPost(params.slug);
   if (!post) return { title: "Post not found" };
+  const description = metaDescription(post.excerpt);
   return {
     title: post.title,
-    description: post.excerpt,
+    description,
     alternates: { canonical: `${site.url}/blog/${post.slug}` },
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description,
       type: "article",
       url: `${site.url}/blog/${post.slug}`,
       images: post.coverImage ? [post.coverImage] : [],
@@ -41,7 +62,7 @@ export default async function PostPage({ params }) {
   if (!post || !post.published) notFound();
 
   prisma.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } }).catch(() => {});
-  const html = toHtml(post.content || "");
+  const html = fixHeadings(toHtml(post.content || ""));
 
   const jsonLd = {
     "@context": "https://schema.org",

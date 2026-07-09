@@ -68,11 +68,31 @@ img { max-width: 100%; display: block; }
 .container-narrow { max-width: 760px; }
 
 /* ---------- Mobile safety (90% of traffic is mobile) ---------- */
-body { overflow-x: hidden; }
+/* Only body clips horizontal overflow — putting overflow-x on <html> would make
+   it a scroll container and break the sticky header. */
+html { max-width: 100%; }
+body { overflow-x: hidden; max-width: 100%; }
 img, video, canvas, iframe { max-width: 100%; height: auto; }
 canvas { height: auto; }
 .hs-wrap, .hs-window { max-width: 100%; }
 input, select, textarea, button { max-width: 100%; }
+
+/* The #1 cause of horizontal scroll on phones: flex/grid children default to
+   min-width:auto and refuse to shrink below their content. Force them to shrink
+   so long words, wide inputs, code and previews stay inside the viewport. */
+.tool-io > *, .tool-controls > *, .grid > *, .flex-between > *,
+.hero-split > *, .searchbar > *, .cat-row > *, .row-actions > *,
+.hero-actions > *, .section-head > *, .chk { min-width: 0; }
+
+/* Sliders & colour pickers never push a control row wider than the screen */
+input[type="range"] { max-width: 100%; accent-color: var(--accent); vertical-align: middle; }
+input[type="color"] { max-width: 100%; padding: 2px; }
+
+/* Long unbroken strings (URLs, hashes, tokens) wrap instead of overflowing */
+.mono-out, .prose code, .hint, .notice { overflow-wrap: anywhere; }
+
+/* Any table can scroll horizontally inside this wrapper instead of breaking out */
+.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 @media (max-width: 560px) {
   .container { padding: 0 15px; }
   .hero { padding: 42px 0 22px; }
@@ -455,6 +475,14 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .bc-meta { font-size: 12.5px; color: var(--muted); margin-top: auto; padding-top: 8px; display: flex; gap: 7px; flex-wrap: wrap; }
 
+/* ---------- Ad units (Google AdSense — labelled for transparency) ---------- */
+.ad-unit { margin: 26px auto; text-align: center; max-width: 100%; overflow: hidden; }
+.ad-unit .ad-label {
+  display: block; font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.ad-unit .adsbygoogle { display: block; width: 100%; }
+
 /* ---------- Ad slot (placeholder + real ad overlay) ---------- */
 .ad-wrap { position: relative; margin: 26px auto; }
 .ad-ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
@@ -475,6 +503,7 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
   .btn-sm { padding: 8px 13px; font-size: 13px; }
   .copy-btn { padding: 7px 12px; }
   input, select, textarea { font-size: 16px; } /* stops iOS zoom-on-focus */
+  .hsearch input, .s-input { font-size: 16px; } /* same, higher-specificity search inputs */
   .input, .select { padding: 11px 13px; }
 
   /* tool controls wrap & breathe; long inputs go full width */
@@ -507,4 +536,94 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
 @media (max-width: 400px) {
   .tool-grid { grid-template-columns: 1fr; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ---- SEO content on tool pages: about / how-to / FAQ -------------------- */
+.tool-seo {
+  display: grid;
+  gap: 22px;
+  margin-top: 32px;
+}
+.tool-seo h2 {
+  font-size: 22px;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+.seo-about p {
+  color: var(--text-soft);
+  max-width: 72ch;
+  margin: 0 0 12px;
+}
+/* how-to: colourful numbered steps */
+.howto {
+  list-style: none;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.howto li {
+  counter-increment: step;
+  position: relative;
+  padding: 14px 16px 14px 56px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-soft);
+}
+.howto li::before {
+  content: counter(step);
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 4px 10px -2px rgba(79, 70, 229, .5);
+}
+/* FAQ accordion */
+.faq-list { display: grid; gap: 10px; }
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 44px 14px 16px;
+  font-weight: 700;
+  color: var(--text);
+  position: relative;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  transition: transform .2s ease;
+}
+.faq-item[open] summary::after { content: "\2013"; }
+.faq-item[open] summary { border-bottom: 1px solid var(--border); }
+.faq-item p {
+  margin: 0;
+  padding: 12px 16px 16px;
+  color: var(--text-soft);
+  max-width: 72ch;
 }

@@ -5,10 +5,12 @@ import AdSlot from "../components/AdSlot";
 import ToolSearch from "../components/ToolSearch";
 import HeroShowcase from "../components/HeroShowcase";
 import BlogCard from "../components/BlogCard";
-import NativeAd from "../components/NativeAd";
 import { site } from "../lib/site";
 
-export const dynamic = "force-dynamic";
+// ISR: cache the homepage and refresh it (with the latest blog posts) every
+// 5 minutes. Much faster + cheaper than re-rendering on every visit, and
+// better for Core Web Vitals (a Google ranking signal).
+export const revalidate = 300;
 
 export const metadata = {
   title: `${site.name} - Free tools, SEO, and productivity apps`,
@@ -88,8 +90,6 @@ export default async function HomePage() {
       <div className="container">
         <AdSlot label="Banner" />
       </div>
-
-      <NativeAd />
 
       <section className="section container">
         <div className="section-head">
