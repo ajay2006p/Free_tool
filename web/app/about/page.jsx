@@ -67,7 +67,7 @@ export default function AboutPage() {
         </p>
         <p>
           Questions, bug reports, or a tool you wish existed? Email us at{" "}
-          <a href="mailto:anaagathumanpower@gmail.com">anaagathumanpower@gmail.com</a>{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>{" "}
           or use the <Link href="/contact">contact page</Link> - you can usually
           expect a reply within 1-2 business days. For how we handle data and the
           rules of use, see our <Link href="/privacy">Privacy Policy</Link> and{" "}

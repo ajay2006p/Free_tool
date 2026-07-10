@@ -45,7 +45,7 @@ export default function AccountForm() {
         <div className="form-field"><label className="fld">Password</label><input className="input" type="password" value={f.password} onChange={(e) => up("password", e.target.value)} placeholder="At least 6 characters" /></div>
         <button className="btn" type="submit" disabled={busy} style={{ width: "100%" }}>{busy ? "Please wait…" : mode === "login" ? "Log in →" : "Create account →"}</button>
       </form>
-      <div className="center" style={{ marginTop: 12 }}><Link href="/" className="muted" style={{ fontSize: 13 }}>← Back to site</Link></div>
+      <div className="center" style={{ marginTop: 12 }}><Link href="/" className="muted" style={{ fontSize: 13, display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 12px" }}>← Back to site</Link></div>
     </div>
   );
 }

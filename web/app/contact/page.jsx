@@ -29,14 +29,14 @@ export default function ContactPage() {
         <p style={{ margin: "16px 0" }}>
           <a
             className="btn"
-            href="mailto:anaagathumanpower@gmail.com?subject=FreeTool%20feedback"
+            href={`mailto:${site.email}?subject=FreeTool%20feedback`}
           >
-            ✉️ Email anaagathumanpower@gmail.com
+            ✉️ Email {site.email}
           </a>
         </p>
         <p className="muted" style={{ fontSize: 14 }}>
           Or copy it:{" "}
-          <a href="mailto:anaagathumanpower@gmail.com">anaagathumanpower@gmail.com</a>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
         </p>
       </div>
 

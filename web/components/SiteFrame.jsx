@@ -16,7 +16,7 @@ export default function SiteFrame({ header, footer, extras, children }) {
     <>
       {extras}
       {header}
-      <main>{children}</main>
+      <main id="main">{children}</main>
       {footer}
     </>
   );

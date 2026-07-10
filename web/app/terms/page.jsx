@@ -85,7 +85,7 @@ export default function TermsPage() {
         <h2>Contact</h2>
         <p>
           Have a question about these terms? Email{" "}
-          <a href="mailto:anaagathumanpower@gmail.com">anaagathumanpower@gmail.com</a>{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>{" "}
           or head to our <Link href="/contact">contact page</Link>. See also our{" "}
           <Link href="/privacy">Privacy Policy</Link> for how we handle data.
         </p>

@@ -1,10 +1,10 @@
 import "./globals.css";
-import Script from "next/script";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Analytics from "../components/Analytics";
 import SiteFrame from "../components/SiteFrame";
 import { site } from "../lib/site";
+import { adsense } from "../lib/ads";
 
 export const metadata = {
   metadataBase: new URL(site.url),
@@ -42,6 +42,16 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
+// `viewportFit: "cover"` lets the page paint under the notch / home indicator;
+// the CSS then pads content back out with env(safe-area-inset-*). Zoom is left
+// unrestricted on purpose — capping it fails WCAG 1.4.4.
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#4f46e5",
+};
+
 // Site-wide Organization structured data — tells Google & AI engines who runs
 // the site (counters the hidden-WHOIS trust gap) and can power richer results.
 const orgJsonLd = {
@@ -52,11 +62,11 @@ const orgJsonLd = {
   logo: `${site.url}/icon.png`,
   image: `${site.url}/icon.png`,
   description: site.description,
-  email: "anaagathumanpower@gmail.com",
+  email: site.email,
   foundingDate: "2026",
   contactPoint: {
     "@type": "ContactPoint",
-    email: "anaagathumanpower@gmail.com",
+    email: site.email,
     contactType: "customer support",
     url: `${site.url}/contact`,
     availableLanguage: "English",
@@ -64,19 +74,19 @@ const orgJsonLd = {
 };
 
 export default function RootLayout({ children }) {
-  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   return (
     <html lang="en">
+      {/* Raw <script> rather than next/script: AdSense verification reads the
+          server-rendered <head>, which `afterInteractive` never reaches. */}
+      <head>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
-        {adsenseClient ? (
-          <Script
-            async
-            strategy="afterInteractive"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-            crossOrigin="anonymous"
-          />
-        ) : null}
         <SiteFrame
           header={<Header />}
           footer={<Footer />}

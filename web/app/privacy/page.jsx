@@ -97,7 +97,7 @@ export default function PrivacyPage() {
         <h2>Contact</h2>
         <p>
           Questions about privacy? We would genuinely like to hear from you. Email{" "}
-          <a href="mailto:anaagathumanpower@gmail.com">anaagathumanpower@gmail.com</a>{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>{" "}
           or visit our <Link href="/contact">contact page</Link>. We may update
           this policy occasionally; the &ldquo;Last updated&rdquo; date above
           always reflects the current version.

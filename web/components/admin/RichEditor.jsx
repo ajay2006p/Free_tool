@@ -51,7 +51,7 @@ export default function RichEditor({ value, onChange, placeholder }) {
         const fd = new FormData();
         fd.append("file", file);
         fd.append("fileName", file.name);
-        fd.append("publicKey", auth.publicKey || auth.token);
+        fd.append("publicKey", auth.publicKey);
         fd.append("signature", auth.signature);
         fd.append("expire", String(auth.expire));
         fd.append("token", auth.token);

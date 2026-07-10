@@ -42,10 +42,17 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        © 2026 {site.name}. Free tools, learning and career resources for builders. ·{" "}
-        <Link href="/services">All services</Link> · <Link href="/blog">Blog</Link> ·{" "}
-        <Link href="/about">About</Link> · <Link href="/contact">Contact</Link> ·{" "}
-        <Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link>
+        <nav className="fb-links" aria-label="Footer">
+          <Link href="/services">All services</Link>
+          <Link href="/blog">Blog</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+        </nav>
+        <p className="fb-copy">
+          © 2026 {site.name}. Free tools, learning and career resources for builders.
+        </p>
       </div>
     </footer>
   );
