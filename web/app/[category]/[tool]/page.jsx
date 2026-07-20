@@ -4,7 +4,7 @@ import { getService, visibleCategories, toolIcon } from "../../../lib/catalog";
 import { getTool } from "../../../lib/toolRegistry";
 import { conversionsBySlug } from "../../../lib/conversions";
 import { UnitConvert } from "../../../components/tools/UnitConvert";
-import { getToolContent } from "../../../lib/toolContent";
+import { getToolContent, hasRichContent } from "../../../lib/toolContent";
 import { site } from "../../../lib/site";
 import AdSlot from "../../../components/AdSlot";
 
@@ -21,11 +21,16 @@ export function generateMetadata({ params }) {
   if (!found) return { title: "Not found" };
   const { category, service } = found;
   const { title, description } = getToolContent(category, service);
+  // Template-generated pages are kept out of the index (see hasRichContent).
+  // `follow` stays on so these pages still pass links through to the tools and
+  // categories that are indexed — they are low-value to rank, not to crawl.
+  const rich = hasRichContent(category, service);
   return {
     title,
     description,
     alternates: { canonical: `${site.url}/${category.slug}/${service.slug}` },
     openGraph: { title, description, type: "website", url: `${site.url}/${category.slug}/${service.slug}` },
+    robots: rich ? undefined : { index: false, follow: true },
   };
 }
 
