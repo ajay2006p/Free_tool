@@ -526,6 +526,29 @@ const OVERRIDES = {
       { q: "Should I focus on speed or accuracy?", a: "Accuracy. Errors cost more time to fix than fast typing saves, and speed rises naturally as accuracy becomes automatic. Practise at a pace where you make almost no mistakes." },
     ],
   },
+  "text-to-speech": {
+    title: "Free Text to Speech Online – Natural Text to Voice Reader",
+    description: "Free text to speech online. Type or paste text and hear it read aloud in a natural voice, with adjustable speed and pitch. No signup, plus optional HD MP3 download.",
+    intro: [
+      "This free text to speech tool reads any text aloud in a natural-sounding voice, right in your browser. Type or paste what you want to hear — an article, an email, a script, study notes, a paragraph in another language — pick a voice, and press Speak. It's a fast, free text to voice reader with no signup and no software to install.",
+      "You get real playback control that most free readers skip: choose from every voice your device offers, adjust the speaking speed and pitch, set the volume, and pause, resume or stop at any point. As it reads, the current word is highlighted so you can follow along — useful for proofreading, language practice and accessibility.",
+      "The free voice runs entirely on your device using the browser's built-in Web Speech API, so your text is never uploaded and it even works offline. For a more lifelike, human-quality result you can also generate an HD neural voice and download it as an MP3 — handy for videos, voiceovers and podcasts where you need an audio file rather than live playback.",
+    ],
+    howto: [
+      "Type or paste your text into the box.",
+      "Pick a voice, then set the speed, pitch and volume to taste.",
+      "Press Speak to hear it read aloud — pause, resume or stop whenever you like.",
+      "For a downloadable MP3, use the HD voice option (where enabled).",
+    ],
+    faqs: [
+      { q: "Is this text to speech tool really free?", a: "Yes. The in-browser voice is completely free with no signup, no watermark and no character limit — read as much text aloud as you like." },
+      { q: "Can I download the audio as an MP3?", a: "The free browser voice plays through your speakers but can't be saved to a file — that's a limitation of the Web Speech API, not the tool. To download audio, use the HD voice option, which returns a real MP3 you can keep and reuse." },
+      { q: "Which voices and languages are available?", a: "The free voices come from your own device and browser, so the exact list varies. Chrome and Edge on desktop usually offer the widest choice, including many languages and both male and female voices. Pick any of them from the voice menu." },
+      { q: "Is my text private?", a: "Yes. The free voice converts your text to speech entirely in your browser, so nothing you type is uploaded or stored. It works offline too." },
+      { q: "Can I use the audio for YouTube videos or commercial projects?", a: "Audio you generate is yours to use, including in videos and commercial work. If you use the HD neural voice, also check the voice provider's licensing terms for commercial narration." },
+      { q: "Why do the voices sound robotic?", a: "The free built-in voices are synthesised locally, which keeps them free and private but limits how natural they sound. The HD voice uses a neural model for far more lifelike, human-like speech." },
+    ],
+  },
 };
 
 // ---- generic generator for every other tool -------------------------------
