@@ -29,7 +29,7 @@ export function generateMetadata({ params }) {
     title,
     description,
     alternates: { canonical: `${site.url}/${category.slug}/${service.slug}` },
-    openGraph: { title, description, type: "website", url: `${site.url}/${category.slug}/${service.slug}` },
+    openGraph: { title, description, type: "website", url: `${site.url}/${category.slug}/${service.slug}`, images: [{ url: "/og.png", width: 1200, height: 630 }] },
     robots: rich ? undefined : { index: false, follow: true },
   };
 }
