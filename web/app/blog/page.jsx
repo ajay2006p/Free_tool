@@ -24,9 +24,9 @@ export default async function BlogIndex() {
   return (
     <div className="container section">
       <div className="section-head">
-        <h2>
+        <h1>
           The Blog<span className="underline" />
-        </h2>
+        </h1>
         <p className="muted" style={{ fontFamily: "var(--sans)", fontSize: 15 }}>
           {posts.length} article{posts.length === 1 ? "" : "s"}
         </p>

@@ -437,7 +437,7 @@ body.drawer-open { overflow: hidden; }
 /* ---------- Sections ---------- */
 .section { padding-top: 40px; padding-bottom: 40px; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
-.section-head h2 { font-size: 26px; }
+.section-head h1, .section-head h2 { font-size: 26px; }
 .section-head .underline { display: none; }
 
 /* ---------- Grids ---------- */
@@ -717,7 +717,7 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
 
   /* section heads + hero */
   .section-head { gap: 8px; }
-  .section-head h2 { font-size: 22px; }
+  .section-head h1, .section-head h2 { font-size: 22px; }
   .hero { padding-top: 40px; padding-bottom: 20px; }
   .hero p.lead { font-size: 16px; }
 
