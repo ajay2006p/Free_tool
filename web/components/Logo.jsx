@@ -4,7 +4,11 @@
    to a transparent circle (the site header is white). */
 import Image from "next/image";
 
-export default function Logo({ size = 30 }) {
+/* `priority` for the header instance: next/image lazy-loads by default, and a
+   lazy image inside the initial viewport is fetched only after hydration —
+   which delays the header paint and makes the logo an LCP candidate on a
+   text-light page. The drawer's copy stays lazy; it starts off-screen. */
+export default function Logo({ size = 30, priority = false }) {
   return (
     <Image
       src="/logo.png"
@@ -12,6 +16,7 @@ export default function Logo({ size = 30 }) {
       aria-hidden="true"
       width={size}
       height={size}
+      priority={priority}
       style={{ flexShrink: 0 }}
     />
   );

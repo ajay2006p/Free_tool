@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getService, visibleCategories, toolIcon } from "../../../lib/catalog";
-import { getTool } from "../../../lib/toolRegistry";
+import { hasTool } from "../../../lib/toolKeys";
+import ToolMount from "../../../components/ToolMount";
 import { conversionsBySlug } from "../../../lib/conversions";
 import { UnitConvert } from "../../../components/tools/UnitConvert";
 import { getToolContent, hasRichContent } from "../../../lib/toolContent";
@@ -38,11 +39,12 @@ export default function ServicePage({ params }) {
   const found = getService(params.category, params.tool);
   if (!found) notFound();
   const { category, service } = found;
-  const Tool = getTool(category.slug, service.slug);
+  const toolKey = `${category.slug}/${service.slug}`;
+  const hasWidget = hasTool(category.slug, service.slug);
   const convertCfg = category.slug === "convert" ? conversionsBySlug[service.slug] : null;
   const content = getToolContent(category, service);
 
-  const isApp = Boolean(Tool || convertCfg);
+  const isApp = Boolean(hasWidget || convertCfg);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": isApp ? "WebApplication" : "WebPage",
@@ -88,9 +90,9 @@ export default function ServicePage({ params }) {
 
       <AdSlot label="Banner" />
 
-      {Tool ? (
+      {hasWidget ? (
         <div className="sheet" style={{ padding: "clamp(14px, 4vw, 24px)" }}>
-          <Tool />
+          <ToolMount toolKey={toolKey} />
         </div>
       ) : convertCfg ? (
         <div className="sheet" style={{ padding: "clamp(14px, 4vw, 24px)" }}>

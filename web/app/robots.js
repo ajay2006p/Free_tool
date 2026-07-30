@@ -39,13 +39,19 @@ const AI_AND_SEARCH_BOTS = [
   "MistralAI-User",
 ];
 
+// User-generated pages (shared forms, availability polls, published link-in-bio
+// pages) and the admin area. These are not ours to rank: they hold visitors'
+// own content and arbitrary outbound links, so keeping them out of the index
+// protects the domain's quality signals. Each page is also noindex'd directly.
+const PRIVATE_PATHS = ["/f/", "/p/", "/admin", "/api/", "/account"];
+
 export default function robots() {
   return {
     rules: [
-      // Every named AI + search crawler: full access.
-      { userAgent: AI_AND_SEARCH_BOTS, allow: "/" },
-      // Everyone else (any other bot): full access too.
-      { userAgent: "*", allow: "/" },
+      // Every named AI + search crawler: full access to the real site.
+      { userAgent: AI_AND_SEARCH_BOTS, allow: "/", disallow: PRIVATE_PATHS },
+      // Everyone else (any other bot): same deal.
+      { userAgent: "*", allow: "/", disallow: PRIVATE_PATHS },
     ],
     sitemap: `${site.url}/sitemap.xml`,
     host: site.url,

@@ -36,6 +36,238 @@ const CATEGORY_NOUN = {
 
 // ---- hand-written content for the most popular tools ----------------------
 const OVERRIDES = {
+  // ---- tools built to answer the "free online <thing>" question clusters ----
+  "survey-maker": {
+    title: "Free Online Survey Tool — Make a Survey & Collect Responses",
+    description:
+      "Build a survey or form free, share one link and collect responses in real time. No signup, no response limit, no watermark — a genuinely free Google Forms alternative.",
+    intro: [
+      "The Survey Maker lets you build a form, share a single link and watch the answers arrive — without an account, a trial or a cap on responses. Pick a template or start blank, add short-text, paragraph, multiple-choice, checkbox, rating, email and number questions, mark the ones that matter as required, and publish.",
+      "Most free online survey tools stop being free at the point you need them: 10 responses, then a paywall, or a logo stamped across your form. This one gives you a public link anyone can fill in and a private results link only you hold, with a live summary and CSV export of every answer.",
+    ],
+    howto: [
+      "Choose a template — customer satisfaction, event feedback, market research or RSVP — or start from blank.",
+      "Add your questions and pick a type for each. Toggle 'Required' on anything you must have an answer to.",
+      "Hit 'Preview form' to see exactly what respondents will see.",
+      "Click 'Publish & get my link'. You'll get a public link to share and a private results link — save the private one, it's the only key to your answers.",
+      "Open your results link any time for a live summary, per-question charts and a CSV download.",
+    ],
+    faqs: [
+      { q: "What are free online survey tools?", a: "They're web apps that let you build a questionnaire, share it as a link and collect answers without buying software. The catch with most is that the free tier limits responses, questions or exports. This one is free with no response cap, no question limit and free CSV export." },
+      { q: "What is the best free online survey tool?", a: "It depends on what you need. Google Forms is the best known free option but requires a Google account for you (not your respondents). If you want to skip the account entirely, this tool builds and hosts a survey in seconds and gives you a link straight away. For long-term, team-based research, a paid tool with logic and quotas is still worth it." },
+      { q: "Is this survey tool really free?", a: "Yes — free to build, free to publish, free to collect responses and free to export as CSV. There's no trial, no signup and no watermark. The site is funded by ads on the tool pages, not by charging you." },
+      { q: "Who can see my survey responses?", a: "Only whoever holds the private results link generated when you publish. The public link shows your questions and never reveals anyone's answers. Save the results link when you publish — it can't be recovered for you." },
+      { q: "Can I see who answered my survey?", a: "Only if you ask. Responses are anonymous unless you add a name or email question yourself, which is often the honest choice for a feedback survey." },
+      { q: "How many responses can I collect?", a: "Up to 5,000 per survey, which is far beyond what most free tiers allow. Export to CSV at any point to keep your own copy." },
+    ],
+  },
+  "meeting-scheduler": {
+    title: "Free Meeting Scheduler — Find a Time Everyone Can Make",
+    description:
+      "Propose times, share one link, and see instantly when your group is free. A free scheduling poll with no accounts, no calendar connection and no signup for anyone.",
+    intro: [
+      "The Meeting Scheduler replaces the 'does Tuesday work for you?' email thread. List the times you're considering, share one link, and everyone marks each slot yes, maybe or no. The grid then scores every option and tells you which time the most people can actually make.",
+      "Nobody has to create an account or connect a calendar — not you, and not your invitees. Times are shown to each person in their own timezone, so a group spread across countries doesn't have to do the maths.",
+    ],
+    howto: [
+      "Name the meeting and, optionally, add your name and a note (length, video or in person).",
+      "Add the times you're considering. Use the shortcuts to add morning/midday/afternoon on one day, or the same time across the next five weekdays.",
+      "Click 'Create poll & get my link' and send that link to everyone you're inviting.",
+      "Each person marks every slot yes, maybe or no and submits — no signup required.",
+      "Open the results link to see the full grid and the winning time, scored by who can make it.",
+    ],
+    faqs: [
+      { q: "Is there a free meeting scheduler with no signup?", a: "Yes — this one. You create the poll and share a link; neither you nor your invitees need an account, an email confirmation or a connected calendar." },
+      { q: "How is this different from a calendar booking link?", a: "A booking link shows your own availability so one person can pick a slot. This is a group poll: it finds the one time that works across many people's conflicting schedules, which is a different problem." },
+      { q: "Does it handle different timezones?", a: "Yes. You pick times in your own timezone and every invitee sees them converted to theirs automatically." },
+      { q: "Can invitees see each other's answers?", a: "Yes, and that's deliberate — a shared availability grid is what lets a group settle on a time. For answers you need kept private, use the Survey Maker instead." },
+      { q: "Can I stop people replying once we've decided?", a: "Yes. The poll can be closed to new responses, and the results grid stays readable afterwards." },
+    ],
+  },
+  "link-in-bio": {
+    title: "Free Website & Link in Bio Page Builder — No Signup",
+    description:
+      "Build a one-page link site free and publish it to a live link in seconds, or download it as a single HTML file to host on your own domain. No account, no watermark, no monthly fee.",
+    intro: [
+      "The Link in Bio builder makes the one page most people actually need: your name, a short bio and a stack of tappable links, on a design that looks deliberate. Pick a theme, add your links, and publish to a live URL you can paste into an Instagram, TikTok, X or YouTube bio.",
+      "You can also download the whole page as a single self-contained HTML file. That means you're never locked in — upload that one file to any host or your own domain and the page is yours, with no subscription and no service that can start charging you later.",
+    ],
+    howto: [
+      "Enter your name or brand and a short bio, then pick an avatar emoji.",
+      "Choose one of the six themes — the live preview updates as you go.",
+      "Add your links. Type just 'instagram.com/you' if you like; the builder adds the https:// for you.",
+      "Click 'Publish my page' to get a live link, or 'Download HTML' to get a single file you can host anywhere.",
+      "Paste your link into your social bio. Publish again any time to make an updated version.",
+    ],
+    faqs: [
+      { q: "Can I really make a website for free?", a: "Yes, for a simple one-page site like this — publish it here at no cost, or download the HTML file and host it free on GitHub Pages, Netlify or Cloudflare Pages. What genuinely costs money is a custom domain (roughly $10 a year); the page itself doesn't have to." },
+      { q: "Is this a free Linktree alternative?", a: "Yes. It does the core job — a themed page of links behind one URL — with no account, no upsell and no branding on your page. What it doesn't do is click analytics or payment buttons." },
+      { q: "Do I need to sign up?", a: "No. Build the page and publish it; nothing is created except the page itself. Pages you publish from a browser are listed in that browser so you can find them again." },
+      { q: "Is there a watermark on my page?", a: "There's a small 'Built with FreeTool' credit in the footer. If you download the HTML file you're free to edit or remove it — it's your file." },
+      { q: "Can I use my own domain?", a: "Not on a published link, but that's what the HTML download is for: put that file on any host pointed at your own domain and the page is entirely yours." },
+    ],
+  },
+  "paraphrasing-tool": {
+    title: "Free Paraphrasing Tool — Rewrite & Reword Text Online",
+    description:
+      "Rewrite any text in five styles — standard, fluency, formal, simple or shortened. No word limit, no signup, and nothing leaves your browser.",
+    intro: [
+      "The Paraphrasing Tool rewrites your text in the browser: it replaces wordy phrases with direct ones, swaps in synonyms that fit the same grammatical slot, and — in fluency and simple modes — breaks over-long sentences at their natural join. Five modes cover the usual jobs: a balanced rewrite, smoother phrasing, a formal tone, plain English, or a shorter version.",
+      "Because it runs entirely on your device there's no word limit, no queue and no upload — useful when the text is a draft you'd rather not paste into someone else's server. It is a rules engine rather than an AI model, so it's instant and private, and you should always read the result before you use it.",
+    ],
+    howto: [
+      "Paste your text into the left-hand box.",
+      "Pick a mode: Standard, Fluency, Formal, Simple or Shorten.",
+      "Use the slider to set how much to change — lower keeps more of your original voice.",
+      "Click 'Try different wording' for an alternative rewrite of the same text.",
+      "Read the output, then copy it. Use 'Rewrite again' to run another pass over the result.",
+    ],
+    faqs: [
+      { q: "What is the best paraphrasing tool online free?", a: "The AI-based ones (like QuillBot's free tier) produce the most natural rewrites but cap your words and require an account. This tool has no word limit, no signup and no upload, and is instant — the trade-off is that it rewrites by rule rather than by understanding, so it's best for tightening your own writing rather than transforming someone else's." },
+      { q: "Is this paraphrasing tool free with no word limit?", a: "Yes. There's no cap, no daily quota and no account. The rewriting happens in your browser, so there's no server cost to ration." },
+      { q: "Will paraphrasing help me avoid plagiarism?", a: "No — and this matters. Rewording someone else's ideas without crediting them is still plagiarism. Paraphrasing tools help you express your own points more clearly; they don't make copied work original. Always cite your sources." },
+      { q: "Is my text private?", a: "Completely. Nothing is uploaded — the rewrite runs on your device, so your draft never touches a server and isn't logged anywhere." },
+      { q: "Does it work for academic writing?", a: "Use it as an editing aid, not a shortcut. Formal and Simple modes are good at cleaning up clunky sentences, but always reread the output: a rules-based rewriter can pick a synonym that's wrong for your subject." },
+    ],
+  },
+  "would-you-rather": {
+    title: "Would You Rather — Free Online Game, No Download",
+    description:
+      "Play Would You Rather free in your browser with 130+ questions across 6 packs — classic, funny, food, tech, deep and family friendly. No download, no signup.",
+    intro: [
+      "Would You Rather gives you two options and no easy way out. Pick a pack — Classic, Funny, Food, Tech & work, Deep or Family friendly — and work through questions drawn in a random order with no repeats until the pack runs out.",
+      "It's one page of JavaScript with nothing to install and no account, so it loads instantly and works on locked-down school and office networks that block game sites. Put it on a big screen for a group: read the question aloud, have everyone point left or right at once, then make the minority explain themselves.",
+    ],
+    howto: [
+      "Pick a question pack at the top — each has its own flavour and difficulty.",
+      "Read the two options and tap the one you'd choose.",
+      "Hit 'Next question' to continue, or 'Skip' if neither option deserves an answer.",
+      "Use 'Copy' to grab the current question for a group chat or story poll.",
+      "Reshuffle at any time, or switch packs when one gets too easy.",
+    ],
+    faqs: [
+      { q: "Is this Would You Rather game free?", a: "Completely — no signup, no download, no in-app purchases. Every one of the 130+ questions is available from the first click." },
+      { q: "Does it work on school or work networks?", a: "Usually, yes. It's a normal web page rather than a game site or an app download, so it loads anywhere a browser works. Whether a specific network allows it is up to that network's filter." },
+      { q: "Is it suitable for kids and classrooms?", a: "The 'Family friendly' pack is written for younger players and school settings. Classic, Funny and Food are broadly safe too; Deep is aimed at older players who want a real conversation." },
+      { q: "How many questions are there?", a: "Over 130, split across six packs. Questions are dealt without repeats, so you'll see every one in a pack before any comes back." },
+      { q: "Can I play in a group?", a: "That's the best way. Put it on a shared screen, count to three and have everyone point to their choice at the same time — the disagreements are the fun part." },
+    ],
+  },
+  "presentation-maker": {
+    title: "Free Online Presentation Tool — Make Slides & Export PDF",
+    description:
+      "Type an outline, get a themed slide deck you can present fullscreen or download as a PDF. Free, no signup, no watermark — a fast PowerPoint and Google Slides alternative.",
+    intro: [
+      "The Presentation Maker builds a deck from an outline instead of a canvas. Start a line with # for a slide title, write your bullets underneath, and the slides appear as you type — themed, consistently spaced and ready to present. No dragging text boxes, and it works just as well on a phone.",
+      "When you're ready, present fullscreen with arrow-key navigation, or export the whole deck as a PDF that opens on any device and projects without letterboxing. Your outline autosaves in the browser, so closing the tab doesn't lose the deck.",
+    ],
+    howto: [
+      "Write your outline: '# My slide title' starts a new slide, and every other line becomes a bullet.",
+      "Pick a theme — the preview on the right updates instantly.",
+      "Click any slide in the list to jump to it and check how it looks.",
+      "Hit 'Present' for fullscreen mode; use the arrow keys or space to move and Esc to exit.",
+      "Click 'Download PDF' for a 16:9 deck you can email, print or present from anywhere.",
+    ],
+    faqs: [
+      { q: "What is an example of a free online presentation tool?", a: "Google Slides and Canva are the best-known free options, and both need an account. This tool is a faster alternative for a straightforward deck: no signup, no install, and an outline-to-slides approach that gets a 10-slide presentation built in a couple of minutes." },
+      { q: "Is it really free, with no watermark?", a: "Yes. Build, present and export as many decks as you like — no trial, no account and nothing stamped on your slides." },
+      { q: "Can I download my presentation as PowerPoint?", a: "Not as a .pptx file. The export is a PDF, which presents and prints identically everywhere and can't have its layout broken by a different version of Office. If you need editable PowerPoint, build it in a tool that outputs .pptx." },
+      { q: "Can I present directly from the browser?", a: "Yes. 'Present' goes fullscreen with arrow-key and spacebar navigation and a slide counter — everything you need for a live talk, offline included." },
+      { q: "Where is my deck saved?", a: "In your own browser's local storage, automatically as you type. Nothing is uploaded. Export a PDF if you want a copy you can move between devices." },
+    ],
+  },
+  "flashcard-maker": {
+    title: "Free Flashcard & Quiz Maker — Study Online, No Signup",
+    description:
+      "Build flashcard decks, study with weakest-cards-first repetition, then test yourself with auto-generated multiple choice. Free, no account, works offline.",
+    intro: [
+      "The Flashcard & Quiz Maker turns a list of terms into a study system. Type cards one at a time or paste a whole list in 'term - definition' form, then study them as flip cards and test yourself with multiple-choice questions the tool builds from your own deck.",
+      "Study mode leads with your weakest cards rather than running in a fixed order — cards you got wrong come back sooner, which is the single thing that makes flashcards work. Decks save in your browser and export to a JSON file, so your revision isn't trapped in an account you might lose access to.",
+    ],
+    howto: [
+      "Name your deck, then add cards — a question or term on the front, the answer on the back.",
+      "In a hurry? Paste a whole list in the bulk box, one card per line, separated by a dash, colon, comma or tab.",
+      "Switch to 'Study' and tap each card to flip it, then mark whether you knew it.",
+      "Switch to 'Test' for multiple-choice questions built from your own deck, and get a score at the end.",
+      "Use 'Export deck' to save a JSON backup, or 'Import deck' to load one on another device.",
+    ],
+    faqs: [
+      { q: "Is there a free LMS or free study platform?", a: "A full LMS (course hosting, enrolment, grading) generally isn't free beyond a limited tier — Moodle is the main genuinely free option, but you have to host it yourself. If what you actually need is to learn and revise material, a flashcard and quiz tool like this one covers it free with no account." },
+      { q: "Is this a free Quizlet or Anki alternative?", a: "For the core loop — make cards, study with repetition, test yourself — yes, free and without an account. Quizlet and Anki go further with shared public decks, mobile apps and detailed scheduling algorithms." },
+      { q: "How does the multiple-choice test work?", a: "It builds each question from your deck: the correct answer plus three real answers from your other cards. That makes it genuinely harder than flipping a card, because every option looks plausible." },
+      { q: "Where are my decks stored?", a: "In your browser only — nothing is uploaded. That means they're private, they work offline, and they're specific to that browser. Export a deck to move it elsewhere or keep a backup." },
+      { q: "Can I share a deck with my class?", a: "Yes, by exporting the deck as a JSON file and sending it. Anyone can load it with 'Import deck' — no account needed on either end." },
+    ],
+  },
+  "certificate-generator": {
+    title: "Free Certificate Generator — Printable PDF Certificates",
+    description:
+      "Make certificates of completion, achievement, participation or appreciation and download print-ready A4 PDFs. Batch mode does a whole class in one file. Free, no watermark.",
+    intro: [
+      "The Certificate Generator produces a proper printable certificate: A4 landscape, double border, a serif layout that holds up framed or scanned, and five colour styles. Pick a type — completion, achievement, participation, appreciation or employee of the month — and the wording is filled in for you to adjust.",
+      "Batch mode is the part that saves real time: paste a list of names and you get one multi-page PDF with a certificate per person, each with its own sequential certificate ID. Everything is rendered on your device, so a class list of names never leaves your computer.",
+    ],
+    howto: [
+      "Choose a certificate type to load sensible default wording.",
+      "Enter the recipient's name, then adjust the title, the line above the name and the description.",
+      "Add your organisation, a certificate ID, the date and a signer name if you want them.",
+      "Pick a colour style and check the live preview.",
+      "For a group, paste one name per line into the batch box, then download a single PDF with one certificate per name.",
+    ],
+    faqs: [
+      { q: "Can I make a certificate online for free?", a: "Yes. Fill in the fields and download a print-ready A4 PDF — no signup, no watermark and no per-certificate charge, whether you make one or a hundred." },
+      { q: "Are free online certificates worth anything?", a: "Two different things get called this. A certificate you print here is a recognition document — it's worth exactly what the issuing person or organisation's word is worth, which is often plenty for a course, a workshop or a team award. A free certificate from an online course platform is worth something to a recruiter only if the issuer is credible; the learning usually matters more than the PDF." },
+      { q: "Can I make certificates for a whole class at once?", a: "Yes. Paste your list into batch mode — one name per line — and you'll get a single PDF with one page per person, each carrying its own sequential certificate ID." },
+      { q: "Is the PDF good enough to print?", a: "Yes. It's true A4 landscape vector output, so it prints crisply at full size rather than pixelating like a screenshot would." },
+      { q: "Do the names I enter get uploaded?", a: "No. The PDF is built in your browser, so recipient names never leave your device — which matters when you're handling a list of students or staff." },
+    ],
+  },
+  "poster-maker": {
+    title: "Free Poster & Social Graphic Maker — No Watermark",
+    description:
+      "Design Instagram posts, stories, YouTube thumbnails, posters and banners free. Full-resolution PNG download, no watermark, no signup — a fast free Canva alternative.",
+    intro: [
+      "The Poster Maker covers the job most people open a design app for: a bold headline on a good-looking background, at exactly the right size. Choose a preset — Instagram post or story, YouTube thumbnail, Facebook or X post, A4 poster or LinkedIn banner — write your text, pick a palette, and download a full-resolution PNG.",
+      "Everything is drawn on a real canvas at export resolution and then scaled down for the preview, so what you see is precisely what downloads. No watermark, no account, no upload — and no font downloads, which is why it's instant even on a slow connection.",
+    ],
+    howto: [
+      "Pick your size preset — the canvas switches to the exact pixel dimensions that platform wants.",
+      "Write your headline (press Enter for a deliberate line break) and a subtitle.",
+      "Add a badge or handle and an optional emoji.",
+      "Choose a palette, alignment, text size and gradient angle until the preview looks right.",
+      "Click 'Download PNG' for the full-resolution image, ready to post or print.",
+    ],
+    faqs: [
+      { q: "How do I use the free version of Canva — and is there a simpler alternative?", a: "Canva's free plan covers a lot, but it needs an account and its best templates, fonts and background remover are Pro-only. For a text-led graphic — a thumbnail, a quote post, a simple poster — this tool is faster: no login, no template hunting, and the download is never watermarked." },
+      { q: "Is there really no watermark?", a: "None. The PNG you download is exactly what's in the preview, at full resolution, with nothing added." },
+      { q: "What sizes can I make?", a: "Instagram post (1080×1080), story or reel (1080×1920), YouTube thumbnail (1280×720), Facebook or X post (1200×630), A4 poster (1240×1754) and LinkedIn banner (1584×396)." },
+      { q: "Can I upload my own photo as the background?", a: "Not in this tool — it builds gradient backgrounds, which is what keeps it instant and private. To work with your own image, use the Meme Generator for captions over a photo, or the Image Resizer to fit a photo to a platform size." },
+      { q: "Is my design uploaded anywhere?", a: "No. The image is rendered on your device and saved straight to your downloads — nothing is sent to a server." },
+    ],
+  },
+  "ai-image-prompt": {
+    title: "AI Image Prompt Generator — Free Prompts for Any Generator",
+    description:
+      "Turn a plain idea into a detailed image prompt for Midjourney, Stable Diffusion, DALL·E or Firefly — with the right syntax, style, lighting and negative prompt. Free, no signup.",
+    intro: [
+      "The AI Image Prompt Generator writes the prompt, not the picture. Describe your idea in a few words, choose a style, lighting, shot type and aspect ratio, and it assembles a full prompt with the detail cues that actually change a generator's output — lens, light quality, mood, composition and quality modifiers.",
+      "Each target platform gets the syntax it really wants: Midjourney flags like --ar and --style raw, a weighted tag list plus a negative prompt for Stable Diffusion, or a single natural-language sentence for DALL·E and Firefly, which follow prose better than tag soup.",
+    ],
+    howto: [
+      "Type what you want a picture of — or hit 'Surprise me' for an idea to start from.",
+      "Pick the generator you'll paste into, so the syntax matches.",
+      "Choose a style, then set lighting, mood, shot type and aspect ratio.",
+      "Add any extra details you want included.",
+      "Copy the prompt and paste it into your generator. Change one detail at a time between runs so you can tell what actually helped.",
+    ],
+    faqs: [
+      { q: "Which AI tool can generate images for free online?", a: "Several offer a free allowance rather than unlimited free use: Microsoft Designer / Bing Image Creator (DALL·E-based, needs a Microsoft account), Adobe Firefly's monthly free credits, and Stable Diffusion, which is genuinely free if you run it on your own machine. Midjourney no longer has a free tier. This tool writes the prompt you paste into whichever of those you use." },
+      { q: "Does this tool generate the images itself?", a: "No, and that's deliberate. Running image models costs real money per image, so any site offering it 'free and unlimited' is either heavily rate-limited or about to start charging. Prompt quality is the part that's genuinely free to fix, and it's what most often separates a flat result from a great one." },
+      { q: "Why does a longer prompt give better images?", a: "Because image models fill in whatever you leave unspecified. Naming the lens, the light, the mood and the composition replaces the model's default guesses with your intent — which is exactly what this tool adds." },
+      { q: "What is a negative prompt?", a: "A list of things you don't want — blurriness, watermarks, extra fingers, bad anatomy. Stable Diffusion supports it directly, and it's one of the easiest quality wins available, so it's included automatically." },
+      { q: "Is it free to use?", a: "Yes — unlimited prompts, no signup, and everything runs in your browser." },
+    ],
+  },
   "json-formatter": {
     intro: [
       "The JSON Formatter beautifies, minifies and validates JSON right in your browser. Paste a messy or minified blob and get clean, indented, easy-to-read JSON — or collapse it back to a single line for production.",

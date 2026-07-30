@@ -15,7 +15,7 @@ export default function Header() {
       <a href="#main" className="skip-link">Skip to content</a>
       <div className="container inner">
         <Link href="/" className="brand" aria-label={`${site.name} home`}>
-          <Logo size={30} />
+          <Logo size={30} priority />
           <span style={{ marginLeft: 9 }}>{site.name}<span className="dot">.</span></span>
         </Link>
         <SearchBox tools={allTools} placeholder="Search tools — try “resume builder”…" />

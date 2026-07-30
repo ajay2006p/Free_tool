@@ -1,7 +1,7 @@
 /* ============================================================================
    The catalog of tools. EVERY tool here is fully working (no signup, no keys).
    Drives the nav, homepage, search, /services, /[category], /[category]/[tool]
-   and the sitemap. Every entry has a matching component in lib/toolRegistry.js.
+   and the sitemap. Every entry has a matching component in components/ToolMount.jsx.
    ========================================================================== */
 
 import { PAIRS } from "./conversions";
@@ -45,6 +45,7 @@ export const categories = [
       { slug: "cron-expression", name: "Cron Expression Explainer", desc: "Read any cron schedule in plain English.", live: true },
       { slug: "html-to-markdown", name: "HTML ⇄ Markdown Converter", desc: "Convert HTML to Markdown and back.", live: true },
       { slug: "password-strength", name: "Password Strength Checker", desc: "Test how strong & crackable a password is.", live: true },
+      { slug: "link-in-bio", name: "Link in Bio Page Builder", desc: "Build & publish a free one-page link site.", live: true },
     ],
   },
   {
@@ -59,6 +60,7 @@ export const categories = [
       { slug: "ai-email-writer", name: "AI Email Writer", desc: "Write professional emails for any situation.", live: true },
       { slug: "business-name-generator", name: "Business Name Generator", desc: "Brandable name ideas for your startup.", live: true },
       { slug: "slogan-generator", name: "Slogan & Tagline Generator", desc: "Catchy slogans & taglines for your brand.", live: true },
+      { slug: "ai-image-prompt", name: "AI Image Prompt Generator", desc: "Turn an idea into a detailed image-generator prompt.", live: true },
     ],
   },
   {
@@ -70,6 +72,7 @@ export const categories = [
       { slug: "game-2048", name: "2048", desc: "Slide & merge tiles to reach 2048.", live: true },
       { slug: "snake", name: "Snake", desc: "The classic grow-the-snake game.", live: true },
       { slug: "tic-tac-toe", name: "Tic-Tac-Toe", desc: "Play X/O against an unbeatable AI.", live: true },
+      { slug: "would-you-rather", name: "Would You Rather", desc: "130+ questions across 6 packs — free, no download.", live: true },
     ],
   },
   {
@@ -88,6 +91,7 @@ export const categories = [
       { slug: "color-palette", name: "Image Color Palette", desc: "Extract a color palette from any image.", live: true },
       { slug: "text-to-handwriting", name: "Text to Handwriting", desc: "Turn typed text into realistic handwriting.", live: true },
       { slug: "placeholder-image", name: "Placeholder Image Generator", desc: "Generate custom placeholder images.", live: true },
+      { slug: "poster-maker", name: "Poster & Social Graphic Maker", desc: "Design posts, thumbnails & posters. No watermark.", live: true },
     ],
   },
   {
@@ -104,6 +108,7 @@ export const categories = [
       { slug: "image-converter", name: "Image Converter", desc: "PNG ⇄ JPG ⇄ WebP.", live: true },
       { slug: "social-image-resizer", name: "Social Image Resizer", desc: "Resize for Instagram, YouTube & more.", live: true },
       { slug: "screen-recorder", name: "Screen Recorder", desc: "Record your screen in the browser.", live: true },
+      { slug: "certificate-generator", name: "Certificate Generator", desc: "Print-ready certificates, one or a whole class.", live: true },
     ],
   },
   {
@@ -124,6 +129,7 @@ export const categories = [
       { slug: "speech-to-text", name: "Speech to Text", desc: "Dictate & transcribe your voice, free.", live: true },
       { slug: "emoji-picker", name: "Emoji Picker", desc: "Search & copy any emoji in one click.", live: true },
       { slug: "prompt-optimizer", name: "AI Prompt Optimizer", desc: "Turn a rough idea into a great AI prompt.", live: true },
+      { slug: "paraphrasing-tool", name: "Paraphrasing Tool", desc: "Rewrite text in 5 styles. No word limit.", live: true },
     ],
   },
   {
@@ -225,6 +231,10 @@ export const categories = [
       { slug: "stopwatch", name: "Stopwatch", desc: "Stopwatch with lap times.", live: true },
       { slug: "countdown", name: "Countdown Timer", desc: "Count down to any date.", live: true },
       { slug: "typing-test", name: "Typing Speed Test", desc: "Measure your WPM & accuracy.", live: true },
+      { slug: "survey-maker", name: "Survey & Form Maker", desc: "Build a form, share a link, collect responses.", live: true },
+      { slug: "meeting-scheduler", name: "Meeting Scheduler", desc: "Find a time everyone can make — no accounts.", live: true },
+      { slug: "presentation-maker", name: "Presentation Maker", desc: "Type an outline, present it, export a PDF deck.", live: true },
+      { slug: "flashcard-maker", name: "Flashcard & Quiz Maker", desc: "Build decks, study them, test yourself.", live: true },
     ],
   },
   {
@@ -351,6 +361,17 @@ export const aliases = {
   "ai-email-writer": "ai email writer generator professional email follow up reply message",
   "business-name-generator": "business name generator startup brand company name ideas maker",
   "slogan-generator": "slogan generator tagline motto brand catchphrase maker",
+  // tools built for the "free online <thing>" question clusters
+  "survey-maker": "free online survey tool survey maker form builder google forms alternative questionnaire poll feedback form create survey free no signup",
+  "meeting-scheduler": "free scheduler meeting scheduler availability poll when2meet doodle alternative find a time group schedule calendar free",
+  "link-in-bio": "free website builder link in bio page linktree alternative one page site micro site free landing page bio link instagram",
+  "paraphrasing-tool": "best paraphrasing tool online free paraphraser rewrite text rewriter reword sentence rephrase quillbot alternative article rewriter",
+  "would-you-rather": "would you rather online free game unblocked questions party game group game school friendly",
+  "presentation-maker": "free online presentation tool slide maker powerpoint alternative google slides free deck maker pitch deck presentation generator pdf",
+  "flashcard-maker": "free lms flashcard maker quiz maker study cards quizlet alternative anki free revision test yourself online course free",
+  "certificate-generator": "free certificate generator maker certificate of completion achievement participation template printable pdf award bulk class",
+  "poster-maker": "free version of canva canva alternative poster maker social media graphic instagram post maker youtube thumbnail maker no watermark free design tool",
+  "ai-image-prompt": "which ai tool can generate images for free online ai image prompt generator midjourney prompt stable diffusion dalle prompt writer art prompt",
   // boosted keywords for existing high-demand tools (trend research)
   "image-compressor": "compress reduce image photo size tinypng ezgif alternative free online compressor",
   "image-resizer": "resize image photo dimensions photo resizer ezgif reduce size online",
@@ -400,6 +421,11 @@ export const icons = {
   "wedding-hashtag-generator": "💍", "resume-template-builder": "🎨",
   "ai-assistant": "🤖", "ai-cover-letter": "✉️", "resume-bullet-generator": "📄",
   "ai-email-writer": "📧", "business-name-generator": "🏷️", "slogan-generator": "💬",
+  // newest batch
+  "survey-maker": "📋", "meeting-scheduler": "📅", "link-in-bio": "🔗",
+  "paraphrasing-tool": "🔄", "would-you-rather": "🤷", "presentation-maker": "📊",
+  "flashcard-maker": "🎴", "certificate-generator": "🏅", "poster-maker": "🎨",
+  "ai-image-prompt": "🖼️",
 };
 
 export function toolIcon(slug, fallback = "🔧") {

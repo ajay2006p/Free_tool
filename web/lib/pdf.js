@@ -117,3 +117,164 @@ export async function buildInvoicePdf(f, items, totals) {
   totRow("TOTAL", totals.total, { bold: true, size: 14, color: accent });
   return doc.save();
 }
+
+/* ---------------- Slide deck PDF ----------------
+   16:9 landscape pages (720 × 405 pt) so the export matches how the deck is
+   presented on screen and projects without letterboxing. */
+export async function buildSlidesPdf(slides, theme) {
+  const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+  const hex = (h) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(h || "").trim());
+    if (!m) return rgb(0, 0, 0);
+    const n = parseInt(m[1], 16);
+    return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+  };
+
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const W = 720, H = 405, margin = 54;
+  const maxW = W - margin * 2;
+  const bg = hex(theme.pdfBg);
+  const ink = hex(theme.pdfText);
+  const accent = hex(theme.pdfAccent);
+
+  slides.forEach((slide, index) => {
+    const page = doc.addPage([W, H]);
+    page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: bg });
+    // Accent bar down the left edge — cheap way to make every slide feel designed.
+    page.drawRectangle({ x: 0, y: 0, width: 6, height: H, color: accent });
+
+    const isTitle = slide.layout === "title";
+    let y = isTitle ? H / 2 + 30 : H - margin;
+
+    const titleSize = isTitle ? 34 : 26;
+    const titleLines = wrap(slide.title || "", bold, titleSize, maxW);
+    for (const line of titleLines) {
+      page.drawText(line, { x: margin, y: y - titleSize, size: titleSize, font: bold, color: ink });
+      y -= titleSize + 8;
+    }
+
+    if (!isTitle) {
+      y -= 6;
+      page.drawLine({ start: { x: margin, y }, end: { x: margin + 70, y }, thickness: 3, color: accent });
+      y -= 22;
+    }
+
+    const bulletSize = isTitle ? 15 : 16;
+    for (const bulletRaw of slide.bullets || []) {
+      const lines = wrap(bulletRaw, font, bulletSize, maxW - (isTitle ? 0 : 20));
+      lines.forEach((line, li) => {
+        if (y - bulletSize < margin - 20) return;
+        const x = margin + (isTitle ? 0 : 20);
+        if (li === 0 && !isTitle) {
+          page.drawText("-", { x: margin + 4, y: y - bulletSize, size: bulletSize, font, color: accent });
+        }
+        page.drawText(line, { x, y: y - bulletSize, size: bulletSize, font, color: ink });
+        y -= bulletSize + 6;
+      });
+      y -= 5;
+    }
+
+    // Slide number, skipped on the title slide.
+    if (!isTitle) {
+      const label = String(index + 1);
+      const w = font.widthOfTextAtSize(label, 10);
+      page.drawText(label, { x: W - margin - w, y: 24, size: 10, font, color: accent });
+    }
+  });
+
+  return doc.save();
+}
+
+/* ---------------- Certificate PDF ----------------
+   A4 landscape with a double border — the layout people expect from a printed
+   certificate, and it survives being framed or scanned. */
+export async function buildCertificatePdf(f, style) {
+  const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+  const hex = (h) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(h || "").trim());
+    if (!m) return rgb(0, 0, 0);
+    const n = parseInt(m[1], 16);
+    return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+  };
+
+  const doc = await PDFDocument.create();
+  const serif = await doc.embedFont(StandardFonts.TimesRoman);
+  const serifBold = await doc.embedFont(StandardFonts.TimesRomanBold);
+  const italic = await doc.embedFont(StandardFonts.TimesRomanItalic);
+
+  const W = 841.89, H = 595.28;
+  const bg = hex(style.pdfBg);
+  const ink = hex(style.pdfText);
+  const accent = hex(style.pdfAccent);
+
+  // One page per recipient, so a whole class or cohort is a single download
+  // instead of thirty separate files.
+  const recipients = (Array.isArray(f.recipients) && f.recipients.length ? f.recipients : [f.recipient])
+    .map((r) => safe(r).trim())
+    .filter(Boolean);
+  if (!recipients.length) recipients.push("Recipient Name");
+
+  recipients.forEach((recipient, idx) => {
+    const page = doc.addPage([W, H]);
+
+    page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: bg });
+    page.drawRectangle({ x: 26, y: 26, width: W - 52, height: H - 52, borderColor: accent, borderWidth: 3 });
+    page.drawRectangle({ x: 36, y: 36, width: W - 72, height: H - 72, borderColor: accent, borderWidth: 1 });
+
+    const centre = (text, y, { fnt = serif, size = 14, color = ink } = {}) => {
+      const s = safe(text);
+      if (!s) return;
+      const w = fnt.widthOfTextAtSize(s, size);
+      page.drawText(s, { x: (W - w) / 2, y, size, font: fnt, color });
+    };
+
+    centre((f.heading || "Certificate of Achievement").toUpperCase(), H - 118, { fnt: serifBold, size: 30, color: accent });
+    centre(f.subheading || "This certificate is proudly presented to", H - 162, { fnt: italic, size: 14 });
+
+    // The recipient's name is the point of the page — size it down only as needed.
+    let nameSize = 44;
+    while (nameSize > 18 && serifBold.widthOfTextAtSize(recipient, nameSize) > W - 200) nameSize -= 2;
+    centre(recipient, H - 232, { fnt: serifBold, size: nameSize });
+    page.drawLine({ start: { x: 150, y: H - 250 }, end: { x: W - 150, y: H - 250 }, thickness: 1, color: accent });
+
+    const reasonLines = wrap(f.reason || "", serif, 14, W - 240).slice(0, 3);
+    let ry = H - 286;
+    for (const line of reasonLines) {
+      centre(line, ry, { size: 14 });
+      ry -= 20;
+    }
+
+    // Signature / date blocks along the bottom.
+    const baseY = 96;
+    const blocks = [
+      { label: f.leftLabel || "Date", value: f.date || "" },
+      { label: f.rightLabel || "Signature", value: f.signer || "" },
+    ];
+    const colW = (W - 200) / 2;
+    blocks.forEach((b, i) => {
+      const cx = 100 + colW * i + colW / 2;
+      const val = safe(b.value);
+      if (val) {
+        const fnt = i === 1 ? italic : serif;
+        const size = i === 1 ? 18 : 13;
+        const w = fnt.widthOfTextAtSize(val, size);
+        page.drawText(val, { x: cx - w / 2, y: baseY + 10, size, font: fnt, color: ink });
+      }
+      page.drawLine({ start: { x: cx - colW / 2 + 20, y: baseY }, end: { x: cx + colW / 2 - 20, y: baseY }, thickness: 1, color: accent });
+      const label = safe(b.label).toUpperCase();
+      const lw = serif.widthOfTextAtSize(label, 9);
+      page.drawText(label, { x: cx - lw / 2, y: baseY - 16, size: 9, font: serif, color: accent });
+    });
+
+    if (f.org) centre(safe(f.org), H - 84, { fnt: serifBold, size: 12, color: accent });
+    if (f.serial) {
+      // Batch runs get a per-page suffix so no two certificates share an ID.
+      const id = recipients.length > 1 ? `${f.serial}-${String(idx + 1).padStart(3, "0")}` : f.serial;
+      page.drawText(safe(`Certificate ID: ${id}`), { x: 46, y: 46, size: 8, font: serif, color: accent });
+    }
+  });
+
+  return doc.save();
+}
