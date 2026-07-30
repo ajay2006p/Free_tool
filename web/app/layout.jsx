@@ -82,6 +82,17 @@ export default function RootLayout({ children }) {
           server-rendered <head>, which `afterInteractive` never reaches. */}
       <head>
         <meta name="google-adsense-account" content={adsense.client} />
+        {/* Resource hints: open the connection to the heaviest third parties
+            (AdSense loader + ad servers, and the blog image CDNs) before the
+            browser parses the tags that need them. Shaves DNS + TCP + TLS
+            setup off the critical path — the main safe perf win on a site
+            whose biggest cost is the ad script we can't remove. */}
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
+        <link rel="dns-prefetch" href="https://tpc.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://ik.imagekit.io" />
         <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
