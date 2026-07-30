@@ -639,6 +639,17 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
   text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
 }
 .ad-unit .adsbygoogle { display: block; width: 100%; }
+/* Reserve vertical space BEFORE the ad fills, so the page doesn't shift when
+   AdSense injects the creative. This is the fix for a large Cumulative Layout
+   Shift: without a reserved height the <ins> starts at 0px and expands, pushing
+   everything below it down. Heights are typical filled sizes; a slightly taller
+   creative grows the box only by the small remainder, not the whole ad. */
+.ad-unit--display .adsbygoogle { min-height: 100px; }
+.ad-unit--article .adsbygoogle { min-height: 280px; }
+@media (max-width: 767px) {
+  .ad-unit--display .adsbygoogle { min-height: 100px; }
+  .ad-unit--article .adsbygoogle { min-height: 250px; }
+}
 
 /* ---------- Ad slot (placeholder + real ad overlay) ---------- */
 .ad-wrap { position: relative; margin: 26px auto; }

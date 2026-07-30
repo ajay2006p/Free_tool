@@ -66,7 +66,7 @@ export default function AdSlot({ label = "Advertisement", variant = "display" })
   const slot = isArticle ? adsense.slots.inArticle : adsense.slots.display;
   if (adsense.client && slot) {
     return (
-      <div className="ad-unit">
+      <div className={`ad-unit ${isArticle ? "ad-unit--article" : "ad-unit--display"}`}>
         <span className="ad-label">Advertisement</span>
         <AdUnit
           slot={slot}
