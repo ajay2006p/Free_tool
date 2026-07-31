@@ -23,6 +23,18 @@ export default function Analytics() {
       if (navigator.sendBeacon) navigator.sendBeacon("/api/track", new Blob([body], { type: "application/json" }));
       else fetch("/api/track", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true });
     } catch (e) {}
+    // GA4 counterpart — gtag.js only auto-tracks full page loads, so client-side
+    // route changes have to be sent by hand (the tag is configured with
+    // send_page_view:false in the root layout, so this covers the first view too).
+    try {
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "page_view", {
+          page_path: pathname,
+          page_location: window.location.href,
+          page_title: document.title,
+        });
+      }
+    } catch (e) {}
   }, [pathname]);
   return null;
 }

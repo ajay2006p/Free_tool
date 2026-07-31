@@ -98,8 +98,44 @@ export default function RootLayout({ children }) {
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
           crossOrigin="anonymous"
         />
+        {/* Google Analytics 4. `send_page_view: false` because App Router
+            navigations don't reload the page — <Analytics> fires every view,
+            including the first, so nothing is counted twice. */}
+        {site.gaId ? (
+          <>
+            <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${site.gaId}',{send_page_view:false});`,
+              }}
+            />
+          </>
+        ) : null}
+        {/* Google Tag Manager — loads its own container alongside the hard-coded
+            GA4 tag above. If you ever add a GA4 tag for the SAME measurement id
+            inside GTM, remove the gtag block above or views get counted twice. */}
+        {site.gtmId ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${site.gtmId}');`,
+            }}
+          />
+        ) : null}
       </head>
       <body>
+        {/* GTM fallback for users with JS disabled. Must be the first thing in
+            <body> per Google's install instructions. */}
+        {site.gtmId ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${site.gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        ) : null}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <SiteFrame
           header={<Header />}
