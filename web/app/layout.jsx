@@ -5,6 +5,7 @@ import Analytics from "../components/Analytics";
 import SiteFrame from "../components/SiteFrame";
 import { site } from "../lib/site";
 import { adsense } from "../lib/ads";
+import { ORG_ID } from "../lib/seo";
 
 export const metadata = {
   metadataBase: new URL(site.url),
@@ -56,16 +57,32 @@ export const viewport = {
 
 // Site-wide Organization structured data — tells Google & AI engines who runs
 // the site (counters the hidden-WHOIS trust gap) and can power richer results.
+// The @id is the anchor every other page's JSON-LD points at with `publisher`,
+// so one entity is described once and referenced everywhere. `knowsAbout` gives
+// answer engines an explicit topical scope — what this site is an authority on.
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": ORG_ID,
   name: site.name,
+  alternateName: "freetoolss.online",
   url: site.url,
   logo: `${site.url}/icon.png`,
   image: `${site.url}/icon.png`,
   description: site.description,
+  slogan: site.tagline,
   email: site.email,
   foundingDate: "2026",
+  knowsAbout: [
+    "free online tools",
+    "developer utilities",
+    "file and image conversion",
+    "PDF tools",
+    "SEO tools",
+    "online calculators",
+    "text and writing tools",
+    "productivity apps",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
     email: site.email,
@@ -82,6 +99,11 @@ export default function RootLayout({ children }) {
           server-rendered <head>, which `afterInteractive` never reaches. */}
       <head>
         <meta name="google-adsense-account" content={adsense.client} />
+        {/* Point AI crawlers at the plain-text site map they can read cheaply.
+            /llms.txt is the index; /llms-full.txt carries the actual tool copy,
+            steps and FAQ answers so an engine can answer without rendering JS. */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="llms-full.txt" />
         {/* Resource hints: open the connection to the heaviest third parties
             (AdSense loader + ad servers, and the blog image CDNs) before the
             browser parses the tags that need them. Shaves DNS + TCP + TLS

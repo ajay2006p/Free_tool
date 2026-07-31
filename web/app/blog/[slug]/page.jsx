@@ -4,6 +4,7 @@ import { marked } from "marked";
 import { prisma } from "../../../lib/db";
 import { site } from "../../../lib/site";
 import { formatDate, readingTime } from "../../../lib/utils";
+import { graph, breadcrumbLd, orgRef } from "../../../lib/seo";
 import AdSlot from "../../../components/AdSlot";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,13 @@ function metaDescription(raw, max = 155) {
   const cut = text.slice(0, max);
   const at = cut.lastIndexOf(" ");
   return (at > 60 ? cut.slice(0, at) : cut).replace(/[\s,;:.\-]+$/, "") + "…";
+}
+
+// Rough word count off the raw body, tags stripped — feeds schema `wordCount`,
+// which engines use as one signal of whether a page is substantive.
+function countWords(raw) {
+  const text = String(raw || "").replace(/<[^>]*>/g, " ").trim();
+  return text ? text.split(/\s+/).length : 0;
 }
 
 // Keep exactly one <h1> per page (the post title, rendered by the page itself).
@@ -64,16 +72,35 @@ export default async function PostPage({ params }) {
   prisma.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } }).catch(() => {});
   const html = fixHeadings(toHtml(post.content || ""));
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.excerpt,
-    author: { "@type": "Person", name: post.author },
-    datePublished: new Date(post.createdAt).toISOString(),
-    dateModified: new Date(post.updatedAt).toISOString(),
-    image: post.coverImage || undefined,
-  };
+  const url = `${site.url}/blog/${post.slug}`;
+  // Answer engines weight authorship, publisher and freshness heavily when
+  // choosing which of several sources to cite for the same claim — so the
+  // article node names all three explicitly and links back to the Organization.
+  const jsonLd = graph(
+    {
+      "@type": "BlogPosting",
+      "@id": `${url}#article`,
+      headline: post.title,
+      description: metaDescription(post.excerpt, 300),
+      author: { "@type": "Person", name: post.author, url: `${site.url}/about` },
+      publisher: orgRef,
+      datePublished: new Date(post.createdAt).toISOString(),
+      dateModified: new Date(post.updatedAt).toISOString(),
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      url,
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      articleSection: post.category || undefined,
+      wordCount: countWords(post.content),
+      timeRequired: `PT${readingTime(post.content)}M`,
+      image: post.coverImage || undefined,
+    },
+    breadcrumbLd([
+      ["Home", "/"],
+      ["Blog", "/blog"],
+      [post.title],
+    ])
+  );
 
   return (
     <article className="container container-narrow article">

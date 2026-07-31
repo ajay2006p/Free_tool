@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategory, visibleCategories, toolIcon } from "../../lib/catalog";
 import { site } from "../../lib/site";
+import { graph, breadcrumbLd, itemListLd, orgRef } from "../../lib/seo";
 import AdSlot from "../../components/AdSlot";
 
 export function generateStaticParams() {
@@ -22,13 +23,34 @@ export default function CategoryPage({ params }) {
   const cat = getCategory(params.category);
   if (!cat) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: cat.name,
-    description: cat.tagline,
-    url: `${site.url}/${cat.slug}`,
-  };
+  // The ItemList is what makes this page useful to an answer engine: asked for
+  // "free <category> tools", it can return the actual list with names, URLs and
+  // one-liners instead of a single link to a hub it has to crawl first.
+  const jsonLd = graph(
+    {
+      "@type": "CollectionPage",
+      "@id": `${site.url}/${cat.slug}#page`,
+      name: `${cat.name} — free online ${cat.name.toLowerCase()}`,
+      description: cat.tagline,
+      url: `${site.url}/${cat.slug}`,
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      publisher: orgRef,
+      mainEntity: { "@id": `${site.url}/${cat.slug}#tools` },
+    },
+    {
+      ...itemListLd(
+        cat.services.map((s) => ({ name: s.name, desc: s.desc, path: `/${cat.slug}/${s.slug}` })),
+        { name: `Free ${cat.name.toLowerCase()}` }
+      ),
+      "@id": `${site.url}/${cat.slug}#tools`,
+    },
+    breadcrumbLd([
+      ["Home", "/"],
+      ["Tools", "/services"],
+      [cat.name],
+    ])
+  );
 
   return (
     <div className="container section">

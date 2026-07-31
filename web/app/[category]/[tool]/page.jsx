@@ -5,8 +5,9 @@ import { hasTool } from "../../../lib/toolKeys";
 import ToolMount from "../../../components/ToolMount";
 import { conversionsBySlug } from "../../../lib/conversions";
 import { UnitConvert } from "../../../components/tools/UnitConvert";
-import { getToolContent, hasRichContent } from "../../../lib/toolContent";
+import { getToolContent, getQuickAnswer, hasRichContent } from "../../../lib/toolContent";
 import { site } from "../../../lib/site";
+import { graph, breadcrumbLd, howToLd, faqLd, orgRef } from "../../../lib/seo";
 import AdSlot from "../../../components/AdSlot";
 
 export function generateStaticParams() {
@@ -43,40 +44,53 @@ export default function ServicePage({ params }) {
   const hasWidget = hasTool(category.slug, service.slug);
   const convertCfg = category.slug === "convert" ? conversionsBySlug[service.slug] : null;
   const content = getToolContent(category, service);
+  const quick = getQuickAnswer(category, service);
+  const url = `${site.url}/${category.slug}/${service.slug}`;
 
   const isApp = Boolean(hasWidget || convertCfg);
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": isApp ? "WebApplication" : "WebPage",
-    name: service.name,
-    description: service.desc,
-    url: `${site.url}/${category.slug}/${service.slug}`,
-    ...(isApp
-      ? {
-          applicationCategory: "UtilitiesApplication",
-          operatingSystem: "Any (web browser)",
-          browserRequirements: "Requires JavaScript. Runs in any modern browser.",
-          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-          isAccessibleForFree: true,
-          publisher: { "@type": "Organization", name: site.name, url: site.url },
-        }
-      : {}),
-  };
-
-  const faqLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: content.faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
+  // One @graph rather than several loose <script> blocks: the app/page, the
+  // steps, the FAQ and the breadcrumb trail all describe the same thing, and
+  // answer engines resolve them far more reliably when they're linked.
+  const jsonLd = graph(
+    {
+      "@type": isApp ? "WebApplication" : "WebPage",
+      "@id": `${url}#tool`,
+      name: service.name,
+      // The quick-answer lead doubles as the machine-readable abstract, so the
+      // passage an engine quotes is the passage a human sees at the top.
+      description: quick.lead,
+      abstract: service.desc,
+      url,
+      inLanguage: "en",
+      isAccessibleForFree: true,
+      publisher: orgRef,
+      ...(isApp
+        ? {
+            applicationCategory: "UtilitiesApplication",
+            operatingSystem: "Any (web browser)",
+            browserRequirements: "Requires JavaScript. Runs in any modern browser.",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            featureList: content.howto,
+          }
+        : {}),
+    },
+    howToLd({
+      name: `How to use ${service.name}`,
+      description: content.description,
+      steps: content.howto,
+      url,
+    }),
+    faqLd(content.faqs),
+    breadcrumbLd([
+      ["Home", "/"],
+      [category.name, `/${category.slug}`],
+      [service.name],
+    ])
+  );
 
   return (
     <div className="container section">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <div className="crumbs">
         <Link href="/">Home</Link> / <Link href={`/${category.slug}`}>{category.name}</Link> / {service.name}
       </div>
@@ -87,6 +101,25 @@ export default function ServicePage({ params }) {
           {service.desc}
         </p>
       </div>
+
+      {/* Answer-first summary. Deliberately the first content after the <h1>
+          and above every ad: an AI crawler that reads only the top of the page
+          should still come away with a complete, quotable answer — what this
+          is, what it costs, whether it needs an account and where data goes. */}
+      <section className="quick-answer" aria-labelledby="quick-answer-h">
+        <h2 id="quick-answer-h" className="qa-title">
+          {service.name} at a glance
+        </h2>
+        <p className="qa-lead">{quick.lead}</p>
+        <dl className="qa-facts">
+          {quick.facts.map((f) => (
+            <div key={f.label} className="qa-fact">
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
       <AdSlot label="Banner" />
 
@@ -124,9 +157,13 @@ export default function ServicePage({ params }) {
 
         <div className="seo-how">
           <h2>How to use {service.name}</h2>
+          {/* Ids match the HowToStep `url` anchors emitted in the JSON-LD, so a
+              cited step links to the exact step rather than the page top. */}
           <ol className="howto">
             {content.howto.map((step, i) => (
-              <li key={i}>{step}</li>
+              <li key={i} id={`step-${i + 1}`}>
+                {step}
+              </li>
             ))}
           </ol>
         </div>

@@ -21,6 +21,18 @@ export function GET() {
     "All tools are free, run in the browser with no signup, and keep your data on your device unless a tool explicitly needs a server (noted on the tool's page)."
   );
   out.push("");
+  // Attribution terms + a pointer to the full text. Stated plainly because an
+  // answer engine deciding whether it may quote a page looks for exactly this,
+  // and because /llms-full.txt saves it from rendering 49 JS pages to find the
+  // same answers.
+  out.push(
+    `Full text of every tool page — summaries, steps and FAQ answers — is available in one file: ${base}/llms-full.txt`
+  );
+  out.push("");
+  out.push(
+    `Attribution: content may be quoted or summarised with credit to ${site.name} (${base}). Questions: ${site.email}`
+  );
+  out.push("");
   out.push("## Key pages");
   out.push(`- [All tools](${base}/services): browse every tool by category`);
   out.push(`- [Blog](${base}/blog): guides and tutorials`);

@@ -6,6 +6,7 @@ import ToolSearch from "../components/ToolSearch";
 import HeroShowcase from "../components/HeroShowcase";
 import BlogCard from "../components/BlogCard";
 import { site } from "../lib/site";
+import { graph, itemListLd, orgRef, SITE_ID } from "../lib/seo";
 
 // ISR: cache the homepage and refresh it (with the latest blog posts) every
 // 5 minutes. Much faster + cheaper than re-rendering on every visit, and
@@ -44,18 +45,31 @@ export default async function HomePage() {
   const posts = await getLatestPosts();
   const total = countTotal();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: site.name,
-    url: site.url,
-    description: site.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${site.url}/services?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
+  const jsonLd = graph(
+    {
+      "@type": "WebSite",
+      "@id": SITE_ID,
+      name: site.name,
+      url: site.url,
+      description: site.description,
+      inLanguage: "en",
+      publisher: orgRef,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${site.url}/services?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
     },
-  };
+    // Naming the popular tools on the homepage gives engines a concrete entry
+    // point for "free <thing>" queries instead of only the abstract site node.
+    itemListLd(
+      POPULAR.map(([label, path]) => ({ name: label.replace(/^\S+\s/, ""), path })),
+      { name: `Popular free tools on ${site.name}` }
+    )
+  );
 
   return (
     <>

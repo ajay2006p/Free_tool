@@ -928,6 +928,49 @@ export function hasRichContent(category, service) {
 }
 
 /**
+ * The answer-first summary that opens every tool page: one lead sentence plus a
+ * table of hard facts (price, signup, where it runs, what it costs).
+ *
+ * This block exists for GEO. When an answer engine is asked "is there a free X
+ * with no signup", it needs a short, self-contained, factual passage it can
+ * quote — not a marketing intro three scrolls down. Facts are returned as
+ * label/value pairs so the same data can be rendered visibly AND emitted as
+ * schema.org properties, which is what makes a claim citable rather than
+ * merely present.
+ *
+ * Returns { lead, facts: [{ label, value }] }.
+ */
+export function getQuickAnswer(category, service) {
+  const clientSide = !SERVER_BACKED.has(service.slug);
+  const noun = (CATEGORY_NOUN[category.slug] || "tool").toLowerCase();
+  // Only the leading capital is lowered, and only when it starts a normal word —
+  // a blanket .toLowerCase() turns "validate JSON" into "validate json".
+  const what = stripPeriod(service.desc).replace(/^[A-Z](?=[a-z])/, (ch) => ch.toLowerCase());
+
+  const lead =
+    `${service.name} is a free online ${noun} you can use right now to ${what} — ` +
+    `no account, no install and no usage limit. ` +
+    (clientSide
+      ? "It runs entirely inside your browser, so whatever you enter stays on your own device."
+      : "It runs on any modern phone, tablet or computer.");
+
+  const facts = [
+    { label: "Price", value: "Free — no trial, no paid tier, no watermark" },
+    { label: "Sign-up", value: "Not required" },
+    {
+      label: "Where it runs",
+      value: clientSide
+        ? "In your browser — nothing is uploaded to a server"
+        : "Your input is sent to our server to fetch the result, and is not stored",
+    },
+    { label: "Works on", value: "Chrome, Safari, Firefox and Edge — desktop, tablet and phone" },
+    { label: "Category", value: category.name },
+  ];
+
+  return { lead, facts };
+}
+
+/**
  * Returns SEO content for a tool page:
  *   { title, description, intro:[], howto:[], faqs:[{q,a}] }
  */
