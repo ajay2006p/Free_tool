@@ -8,6 +8,7 @@ import ProfileMenu from "./ProfileMenu";
 const NAV = [
   { href: "/", label: "Dashboard", icon: "📊" },
   { href: "/analytics", label: "Analytics", icon: "📈" },
+  { href: "/keywords", label: "Keywords", icon: "🔑" },
   { href: "/posts/new", label: "New Post", icon: "✍️" },
   { href: "/monetization", label: "Monetization", icon: "💰" },
 ];

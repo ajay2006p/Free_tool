@@ -96,3 +96,37 @@ model HostedResponse {
 
   @@index([code])
 }
+
+/// A keyword you have chosen to watch.
+///
+/// Ranking numbers themselves come from Google Search Console and are never
+/// stored here — this is only the watchlist. Keeping it separate means a term
+/// stays visible on the dashboard during weeks when it earns no impressions at
+/// all, which is itself the useful signal: Search Console simply omits queries
+/// that got no traffic, so without a watchlist those keywords silently vanish.
+model Keyword {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  phrase    String   @unique
+  note      String   @default("")
+  createdAt DateTime @default(now())
+}
+
+/// A point-in-time capture of one query's Search Console metrics.
+///
+/// Search Console serves a rolling window and will tell you a query's average
+/// position today, but not what it was a month ago. Movement is the thing you
+/// actually want to see, so each refresh records a row here and the dashboard
+/// diffs against the previous capture.
+model KeywordSnapshot {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  phrase      String
+  position    Float    @default(0)
+  clicks      Int      @default(0)
+  impressions Int      @default(0)
+  ctr         Float    @default(0)
+  rangeDays   Int      @default(28)
+  capturedAt  DateTime @default(now())
+
+  @@index([phrase])
+  @@index([capturedAt])
+}

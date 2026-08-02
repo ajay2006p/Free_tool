@@ -288,3 +288,34 @@ h1,h2,h3,h4 { font-family: var(--sans); color: var(--text); line-height: 1.15; m
 @media (prefers-reduced-motion: reduce) {
   .page, .reveal, .profile .menu, .auth-card, .bar-grow, .live-dot, .stat { animation: none !important; }
 }
+
+/* ---- Keyword tracker -------------------------------------------------- */
+.kw-add { display: flex; gap: 10px; align-items: stretch; }
+.kw-add .input { flex: 1; min-width: 0; }
+.kw-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.kw-select { width: auto; padding: 6px 10px; }
+
+/* The table is the densest thing in the panel, so it scrolls inside its own
+   card rather than forcing the whole page sideways on a narrow screen. */
+.kw-card { overflow-x: auto; }
+.kw-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 720px; }
+.kw-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--text-soft); font-weight: 800; padding: 8px 10px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+.kw-table td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.kw-table tbody tr:hover { background: rgba(124,58,237,.045); }
+.kw-table td:not(:first-child) { white-space: nowrap; }
+.kw-phrase { font-weight: 650; margin-right: 8px; word-break: break-word; }
+
+.kw-up { color: #059669; font-weight: 800; }
+.kw-down { color: #dc2626; font-weight: 800; }
+.kw-flat { color: var(--text-soft); }
+
+.kw-steps { padding-left: 20px; line-height: 1.75; }
+.kw-steps li { margin-bottom: 12px; }
+.kw-steps code { font-size: 13px; }
+.kw-pre { background: var(--bg-soft, #f6f5fb); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; margin: 8px 0; font-size: 12.5px; overflow-x: auto; white-space: pre; }
+
+@media (max-width: 640px) {
+  .kw-add { flex-direction: column; }
+}
