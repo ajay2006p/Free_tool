@@ -1,0 +1,310 @@
+{
+  "summary": {
+    "health_score": 75,
+    "business_type": "Ad-supported free online tools / utility web app (236 tools, Next.js App Router on Vercel + Cloudflare)",
+    "top_findings": [
+      "Twitter/X share cards fall back to the sitewide default on 74 of 79 crawled pages because page-level metadata sets openGraph but not twitter",
+      "Domain is absent from the Common Crawl web graph - no measurable backlink profile, which is the binding constraint on rankings",
+      "46 of 79 indexed pages are under 500 words; category hubs run 49-126 words",
+      "38 of 49 indexed tool pages used formulaic boilerplate titles and descriptions",
+      "Only 4 outbound external links exist across the entire 79-page indexed site, weakening E-E-A-T and citation signals"
+    ],
+    "quick_wins": [
+      "Restate twitter metadata in generateMetadata for tool, category and blog routes (APPLIED)",
+      "Write unique titles and descriptions for the 38 boilerplate tool pages (APPLIED)",
+      "Add alt text to the 2 blog cover images served from ImageKit",
+      "Add X-Content-Type-Options, Referrer-Policy and a Permissions-Policy header",
+      "Collapse the two-hop http://freetoolss.online redirect into a single hop",
+      "Add speculation rules for prefetch/prerender on top navigation paths"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 85,
+      "what_works": [
+        "robots.txt explicitly allows 22 named AI and search crawlers, with /admin, /account, /api, /f/, /p/ disallowed",
+        "Canonical present on 100% of crawled pages (79/79), all self-referencing and absolute",
+        "Exactly one H1 on every crawled page - zero missing, zero duplicated",
+        "Server-rendered HTML delivered to Googlebot UA identical to default UA - no cloaking, no SPA shell dependency",
+        "404 for unknown paths returns a true 404 status, not a soft 200",
+        "HSTS set with max-age=63072000; HTTPS enforced",
+        "Sitemap deliberately trimmed to 79 genuinely distinct URLs out of 264 built pages to protect crawl budget on a new domain"
+      ],
+      "findings": [
+        {
+          "title": "Security headers largely absent",
+          "severity": "Medium",
+          "description": "Only strict-transport-security is returned. X-Content-Type-Options, Referrer-Policy, X-Frame-Options, Permissions-Policy and Content-Security-Policy are all missing on the document response.",
+          "recommendation": "Add a headers() block in next.config.mjs setting X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin, and a Permissions-Policy. Introduce CSP in report-only mode first, since AdSense and GTM need allowances."
+        },
+        {
+          "title": "Two-hop redirect from http://freetoolss.online",
+          "severity": "Low",
+          "description": "http://freetoolss.online returns 308 to https://freetoolss.online/, which returns a second 308 to https://www.freetoolss.online/. Each hop costs crawl budget and a round trip.",
+          "recommendation": "Configure the apex http listener to redirect straight to https://www.freetoolss.online/ in one hop."
+        },
+        {
+          "title": "No speculation rules for next-navigation",
+          "severity": "Low",
+          "description": "preload_check.py scored the homepage 75/100. Preload hints and LCP fetchpriority are correctly set, but no <script type=\"speculationrules\"> block exists.",
+          "recommendation": "Add speculation rules prefetching the top category hubs and the five most-used tools to remove next-navigation paint cost."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 62,
+      "what_works": [
+        "Every tool page opens with an answer-first quick-answer block above all ads",
+        "Hand-written intro, how-to steps and FAQs exist for 49 tools",
+        "Template-generated pages are correctly marked noindex and excluded from the sitemap rather than padding the index",
+        "content_quality.py scored sampled tool pages 77/100 with zero filler and zero AI-pattern flags"
+      ],
+      "findings": [
+        {
+          "title": "Category hub pages are extremely thin",
+          "severity": "High",
+          "description": "Word counts: career 49, games 53, converters 56, social 92, files 101, ai 104, image 119, text 120, calculators 123, productivity 126. These hubs are indexed and sit one click from the homepage but carry almost no unique text.",
+          "recommendation": "Add 200-300 words of genuinely category-specific copy per hub: what the category covers, who uses it, how to choose between the tools listed, and 2-3 category-level FAQs."
+        },
+        {
+          "title": "46 of 79 indexed pages are under 500 words",
+          "severity": "High",
+          "description": "Median word count across the indexed set is 481. Tool pages run 352-480 words, which is thin against competitors ranking for the same utility queries.",
+          "recommendation": "Prioritise depth on the 10-15 highest-intent tools: add worked examples, edge cases, format explanations and comparison notes. Depth on a few pages beats a thin uplift everywhere."
+        },
+        {
+          "title": "Almost no outbound citations sitewide",
+          "severity": "Medium",
+          "description": "Only 4 external links exist across all 79 indexed pages; 78 of 79 pages have zero. Outbound citation to authoritative sources is a documented E-E-A-T signal and materially affects whether answer engines treat a page as sourced.",
+          "recommendation": "Add 1-2 authoritative citations per technical tool page - RFC 8259 on the JSON pages, OWASP password guidance on the password tools, the WCAG contrast spec on the contrast checker."
+        },
+        {
+          "title": "Blog posts receive only one inbound internal link each",
+          "severity": "Medium",
+          "description": "Every blog post has exactly 1 inbound internal link within the crawled set, arriving solely from the /blog index. No tool page links to a related post and no post links to another post.",
+          "recommendation": "Add a contextual 'related reading' link from each tool page to a relevant post, and cross-link posts to each other and to the tools they discuss."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 62,
+      "what_works": [
+        "Zero exactly-duplicated titles and zero exactly-duplicated descriptions across the 79 crawled pages",
+        "og:image present on 79/79 pages",
+        "One H1 per page throughout; heading hierarchy valid",
+        "Blog excerpts are truncated at a word boundary near 155 chars rather than dumped whole into the description"
+      ],
+      "findings": [
+        {
+          "title": "Twitter/X share cards fall back to the sitewide default",
+          "severity": "High",
+          "description": "61 of 79 pages emitted twitter:title 'FreeTool' and the generic sitewide description while og:title was page-specific. A further 13 category hubs set neither block and inherited both. Cause: Next.js merges metadata field by field, so a route that sets only openGraph inherits the root layout's twitter object verbatim.",
+          "recommendation": "Restate a twitter block in every generateMetadata that sets openGraph. APPLIED to app/[category]/[tool]/page.jsx, app/[category]/page.jsx and app/blog/[slug]/page.jsx; verified in the build output."
+        },
+        {
+          "title": "Boilerplate titles and descriptions on 38 tool pages",
+          "severity": "High",
+          "description": "38 of the 49 indexed tool overrides omitted title and description, so getToolContent fell back to a template. Nine pages shared the suffix 'Free Online Developer Tool', five 'Free Online Calculator', five 'Free Online Image Tool'. Every description ended with the identical clause 'free online - no signup, no install, works on any device.' Values were technically unique but formulaically near-identical.",
+          "recommendation": "Write unique keyword-first metadata per tool. APPLIED: 38 unique titles and descriptions added to lib/toolContent.js, all within length limits, verified in the build output."
+        },
+        {
+          "title": "18 titles exceed 62 characters",
+          "severity": "Medium",
+          "description": "Titles including ai/ai-image-prompt (69), productivity/survey-maker (70), files/certificate-generator (66) and six blog posts (63-71) will be truncated in SERPs, cutting the differentiating end of the title.",
+          "recommendation": "Shorten to 60 characters or fewer including the ' · FreeTool' suffix, front-loading the primary keyword."
+        },
+        {
+          "title": "24 descriptions under 110 characters, 8 over 160",
+          "severity": "Low",
+          "description": "Short descriptions (about 82, blog 75, career 75, converters 80, games 81) waste available SERP real estate; over-long ones (tools/link-in-bio 180, ai/ai-image-prompt 177) get truncated mid-sentence.",
+          "recommendation": "Rewrite outliers into the 140-158 character band."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 92,
+      "what_works": [
+        "Zero malformed JSON-LD blocks across all 79 pages; zero pages without structured data",
+        "Organization emitted on all 79 pages with a stable @id every other node references via publisher",
+        "WebApplication + HowTo + FAQPage on all 49 rich tool pages",
+        "BreadcrumbList on 73 pages, BlogPosting on 12, ItemList on 13, CollectionPage on 12, WebSite on 1",
+        "One cross-linked @graph per page rather than disconnected script islands",
+        "HowToStep url anchors match real #step-N ids in the rendered DOM"
+      ],
+      "findings": [
+        {
+          "title": "No author entity or sameAs profiles",
+          "severity": "Medium",
+          "description": "BlogPosting names an author as a Person but that Person has no sameAs profiles, and the Organization has no sameAs links to any social or third-party profile. Answer engines weight author and publisher identity when choosing between competing sources.",
+          "recommendation": "Add sameAs arrays to the Organization and to the blog author Person pointing at real, controlled profiles. Only list profiles that genuinely exist."
+        },
+        {
+          "title": "No aggregateRating or usage signals on WebApplication nodes",
+          "severity": "Info",
+          "description": "WebApplication nodes carry offers and featureList but no rating or interaction signals.",
+          "recommendation": "Only add aggregateRating if real user ratings are collected. Fabricated ratings are a manual-action risk and Google strips unverifiable review markup."
+        }
+      ]
+    },
+    {
+      "name": "Performance (Core Web Vitals)",
+      "score": 75,
+      "what_works": [
+        "LCP image marked with fetchpriority=high and preloaded; 2 preload hints present",
+        "No bfcache killers - no no-store, no unload, no beforeunload handlers",
+        "Zero deprecated prerender directives",
+        "Resource hints preconnect/dns-prefetch open connections to AdSense, GTM and both image CDNs ahead of parse",
+        "next/image supplies explicit width and height, avoiding layout shift on the logo and blog covers",
+        "No ad rendered above the fold on mobile"
+      ],
+      "findings": [
+        {
+          "title": "No field (CrUX) or lab (PSI) data could be collected",
+          "severity": "Info",
+          "description": "pagespeed_check.py returned 'PSI rate limit exceeded' - the unkeyed shared quota is exhausted - and no GOOGLE_API_KEY is configured, so CrUX field data is also unavailable. This category score is inferred from static analysis only and carries low confidence.",
+          "recommendation": "Create a free Google API key, save it to ~/.config/claude-seo/google-api.json, then re-run PSI and CrUX to replace this inferred score with measured LCP, INP and CLS."
+        },
+        {
+          "title": "No speculation rules",
+          "severity": "Low",
+          "description": "preload_check.py scored 75/100, with the deduction attributable to the absent speculationrules block.",
+          "recommendation": "Add prefetch/prerender speculation rules for the top navigation paths."
+        },
+        {
+          "title": "Third-party ad and tag scripts dominate the loading cost",
+          "severity": "Medium",
+          "description": "AdSense, GA4 gtag and a GTM container all load on every page. GTM and the hard-coded gtag tag are independent, so a GA4 tag added inside GTM for the same measurement id would double-count.",
+          "recommendation": "Keep GA4 in exactly one place. Audit the GTM container for redundant tags and consider consolidating GA4 into GTM or removing GTM if it carries nothing else."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness (GEO)",
+      "score": 88,
+      "what_works": [
+        "GPTBot, ClaudeBot, PerplexityBot and CCBot all receive HTTP 200 on tool pages - verified by live UA request",
+        "llms.txt index plus a 112 KB llms-full.txt carrying full tool copy, steps and FAQ answers",
+        "Both files advertised via <link rel=alternate> in the document head",
+        "Answer-first quick-answer block placed above every ad, with price, signup, where-it-runs and browser support as machine-readable label/value pairs",
+        "FAQPage schema on 49 pages - the highest-value block for question-shaped AI queries",
+        "Explicit attribution and contact line in llms.txt"
+      ],
+      "findings": [
+        {
+          "title": "No outbound citations to authoritative sources",
+          "severity": "Medium",
+          "description": "With 4 external links sitewide, pages present claims without sourcing. Answer engines preferentially cite pages that themselves cite primary sources.",
+          "recommendation": "Add primary-source links to the specs and standards each tool implements."
+        },
+        {
+          "title": "No brand entity corroboration",
+          "severity": "Medium",
+          "description": "The Organization has no sameAs, and the domain has no third-party mentions detectable in the Common Crawl graph. There is no external corroboration that the brand exists.",
+          "recommendation": "Establish and link controlled profiles, then reference them via sameAs so the entity is verifiable off-domain."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 88,
+      "what_works": [
+        "Only 2 genuinely missing alt attributes across 198 images crawled",
+        "The 158 header/footer logo instances flagged by the parser use alt=\"\" with aria-hidden=\"true\", which is the correct treatment for a decorative mark beside a text wordmark - not a defect",
+        "next/image used throughout with explicit dimensions and correct lazy/priority split",
+        "og.png present and resolving on every page (127 KB, 1200x630)"
+      ],
+      "findings": [
+        {
+          "title": "Two blog cover images have no alt text",
+          "severity": "Medium",
+          "description": "The ImageKit-hosted covers on /blog/100-free-tool-website-use-100-online-tools-without-paying and /blog/tech-trends-worth-attention-2026 render with an empty alt attribute. Their filenames are also raw generator output ('ChatGPT_Image_Jul_10...').",
+          "recommendation": "Add descriptive alt text via the admin panel's post editor and re-upload the assets under descriptive filenames."
+        },
+        {
+          "title": "No image sitemap",
+          "severity": "Low",
+          "description": "Blog cover images are hosted on an external CDN and are not declared in any sitemap.",
+          "recommendation": "Add image entries to the blog portion of the sitemap so covers become eligible for Google Images."
+        }
+      ]
+    },
+    {
+      "name": "Off-Page / Authority",
+      "score": 20,
+      "what_works": [
+        "Clean, keyword-relevant domain",
+        "No toxic or spammy link patterns detected"
+      ],
+      "findings": [
+        {
+          "title": "Domain absent from the Common Crawl web graph",
+          "severity": "Critical",
+          "description": "commoncrawl_graph.py against release cc-main-2026-jan-feb-mar returned in_crawl: false, in_rankings: false, with null pagerank and null harmonic centrality. The domain has no measurable inbound link profile. On-page work cannot overcome zero authority for competitive utility keywords, where incumbents hold very large link profiles.",
+          "recommendation": "This is the binding constraint. Pursue genuine link acquisition: submit the tools to developer directories and awesome-lists, publish the blog content where the audience already is, and earn mentions through the free-and-private positioning. Treat this as the primary workstream for the next quarter."
+        },
+        {
+          "title": "No backlink or Search Console data connected",
+          "severity": "Info",
+          "description": "Moz and Bing Webmaster API keys are unconfigured, and no Google Search Console OAuth token or service account is present, so indexation coverage, impressions and query data are all unavailable.",
+          "recommendation": "Connect Search Console and Bing Webmaster Tools. Both are free and would replace several inferred findings in this report with measured data."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "APPLIED - Restate twitter metadata across tool, category and blog routes (74 pages had generic share cards)",
+          "APPLIED - Unique titles and descriptions for 38 boilerplate tool pages",
+          "Deploy both fixes to production and confirm with a live re-crawl",
+          "Connect Google Search Console and Bing Webmaster Tools, submit the sitemap",
+          "Add alt text to the 2 blog cover images"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Write 200-300 words of unique copy for each thin category hub, starting with career, games and converters",
+          "Shorten the 18 over-length titles to 60 characters or fewer",
+          "Rewrite the 24 short and 8 over-long descriptions into the 140-158 character band",
+          "Add security headers via next.config.mjs headers()",
+          "Collapse the two-hop apex redirect to one hop",
+          "Add speculation rules for top navigation paths"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "Begin genuine link acquisition - this is the binding constraint on rankings",
+          "Add 1-2 authoritative outbound citations per technical tool page",
+          "Deepen the 10-15 highest-intent tool pages beyond 800 words with worked examples and edge cases",
+          "Cross-link blog posts to each other and to the tools they discuss",
+          "Add Organization and author sameAs once real profiles exist"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Capture a drift baseline and compare monthly",
+          "Add a Google API key to enable PSI and CrUX field-data tracking",
+          "Track which tool pages earn AI citations versus classic organic clicks",
+          "Re-audit quarterly"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}

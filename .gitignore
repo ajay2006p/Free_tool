@@ -27,3 +27,9 @@ npm-debug.log*
 
 # yt-dl player-script cache dumped by the video-downloader at runtime
 *-player-script.js
+
+# SEO audit working data — raw crawled HTML and per-page JSON (~14 MB per run).
+# The reports themselves (FULL-AUDIT-REPORT.md, ACTION-PLAN.md, audit-data.json,
+# findings/) are kept; only the regenerable crawl dump is ignored.
+*-audit/pages/
+*-audit/screenshots/

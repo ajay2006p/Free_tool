@@ -32,6 +32,11 @@ export function generateMetadata({ params }) {
     description,
     alternates: { canonical: `${site.url}/${category.slug}/${service.slug}` },
     openGraph: { title, description, type: "website", url: `${site.url}/${category.slug}/${service.slug}`, images: [{ url: "/og.png", width: 1200, height: 630 }] },
+    // Restated per page on purpose: Next.js merges `metadata` field by field, so
+    // setting only `openGraph` leaves the root layout's `twitter` block intact
+    // and every tool's share card reads "FreeTool" with the generic sitewide
+    // description rather than the tool's own name and summary.
+    twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
     robots: rich ? undefined : { index: false, follow: true },
   };
 }

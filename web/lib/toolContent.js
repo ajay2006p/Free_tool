@@ -11,6 +11,8 @@
 
 import { site } from "./site";
 import { conversionsBySlug, convert } from "./conversions";
+import { EXTRA_OVERRIDES } from "./toolContentExtra";
+import { unitFact, dimensionNote, pairContext } from "./unitFacts";
 
 // Tools that talk to a server/API (so the "runs entirely in your browser /
 // data never leaves your device" privacy line does NOT apply to them).
@@ -35,7 +37,7 @@ const CATEGORY_NOUN = {
 };
 
 // ---- hand-written content for the most popular tools ----------------------
-const OVERRIDES = {
+const BASE_OVERRIDES = {
   // ---- tools built to answer the "free online <thing>" question clusters ----
   "survey-maker": {
     title: "Free Online Survey Tool — Make a Survey & Collect Responses",
@@ -269,6 +271,9 @@ const OVERRIDES = {
     ],
   },
   "json-formatter": {
+    title: "JSON Formatter — Beautify, Minify & Validate",
+    description:
+      "Paste messy or minified JSON and get clean, indented output instantly. Validates syntax and flags errors. Runs in your browser — nothing is uploaded.",
     intro: [
       "The JSON Formatter beautifies, minifies and validates JSON right in your browser. Paste a messy or minified blob and get clean, indented, easy-to-read JSON — or collapse it back to a single line for production.",
       "It's perfect for debugging API responses, tidying config files and confirming a payload is valid before you ship it. Nothing is uploaded, so even sensitive data stays on your machine.",
@@ -280,6 +285,9 @@ const OVERRIDES = {
     ],
   },
   "password-generator": {
+    title: "Password Generator — Strong Random Passwords",
+    description:
+      "Create strong random passwords with custom length, symbols, numbers and case. Built with your browser's crypto randomness — nothing is stored or sent.",
     intro: [
       "The Password Generator creates strong, random passwords that are hard to crack and easy to copy. Choose the length and whether to include uppercase letters, numbers and symbols to match any site's requirements.",
       "Strong, unique passwords are the single best defence against account takeovers. Every password is generated locally in your browser and is never transmitted or logged.",
@@ -291,6 +299,9 @@ const OVERRIDES = {
     ],
   },
   "resume-builder": {
+    title: "Resume Builder — Free ATS-Friendly Resume",
+    description:
+      "Build a clean, ATS-friendly resume section by section and print or save it as a PDF. Free with no watermark, no signup and no export limit.",
     intro: [
       "The Resume Builder helps you create a clean, ATS-friendly resume in minutes and download it as a polished PDF. Fill in your experience, education and skills, and the tool handles the formatting for you.",
       "A well-structured, keyword-rich resume gets past applicant tracking systems and in front of real recruiters. Everything you type stays in your browser, so your personal details remain private.",
@@ -302,6 +313,9 @@ const OVERRIDES = {
     ],
   },
   "qr-code-generator": {
+    title: "QR Code Generator — Free PNG, No Watermark",
+    description:
+      "Turn any text, URL, Wi-Fi or contact detail into a scannable QR code and download it as a PNG. No watermark, no signup and your codes never expire.",
     intro: [
       "The QR Code Generator turns any link or text into a scannable QR code you can download and print. Great for menus, business cards, event posters, Wi-Fi sharing and product packaging.",
       "Just type your URL or text and your QR code appears instantly. It's generated in your browser, so your links are never stored or tracked.",
@@ -313,6 +327,9 @@ const OVERRIDES = {
     ],
   },
   "word-counter": {
+    title: "Word & Character Counter — Free Text Stats",
+    description:
+      "Count words, characters, sentences and paragraphs as you type, with an estimated reading time. Free, instant and works entirely in your browser.",
     intro: [
       "The Word & Character Counter instantly counts the words, characters and estimated reading time in any text. Ideal for essays, blog posts, social captions and anything with a length limit.",
       "Paste or type your text and the stats update live as you write. Everything runs in your browser, so your writing stays completely private.",
@@ -324,6 +341,9 @@ const OVERRIDES = {
     ],
   },
   "video-downloader": {
+    title: "Social Media Video Downloader — YouTube, TikTok",
+    description:
+      "Download videos from YouTube, TikTok, Instagram, Facebook and X by pasting a link. Free, no watermark added and nothing to install.",
     intro: [
       "The Social Media Downloader lets you save videos from YouTube, TikTok, Instagram, Facebook and X (Twitter) in a few clicks. Paste a link, pick the quality you want — from crisp HD video to audio-only — and download it straight to your device.",
       "It's the fastest way to keep a copy of clips you're allowed to save: your own uploads, Creative Commons videos, lecture recordings, or reels you want to watch offline. There's no signup, no watermark and no software to install — everything happens through your browser.",
@@ -337,6 +357,9 @@ const OVERRIDES = {
     ],
   },
   "image-to-text": {
+    title: "Image to Text (OCR) — Extract Text Free",
+    description:
+      "Pull editable text out of screenshots, scans and photos with free OCR, then copy it straight to your clipboard. No signup and no page limit.",
     intro: [
       "The Image to Text (OCR) tool pulls the words out of any picture, screenshot, scanned page or photo — right inside your browser. Upload an image and it recognises the text so you can copy, edit and reuse it instead of retyping everything by hand.",
       "It supports multiple languages including English, Spanish, French, German, Hindi, Chinese and Arabic, and works on receipts, business cards, book pages, slides, signs and handwriting-style print. Because the recognition runs locally on your device, your images and their contents are never uploaded to a server.",
@@ -350,6 +373,9 @@ const OVERRIDES = {
     ],
   },
   "speech-to-text": {
+    title: "Speech to Text — Free Voice Dictation Online",
+    description:
+      "Dictate with your microphone and get live transcribed text you can edit and copy. Free browser-based speech recognition, no signup or install.",
     intro: [
       "Speech to Text turns your voice into written words in real time. Press record, start talking, and watch your words appear instantly — no typing required. It's perfect for drafting notes, emails, essays and messages hands-free, or for anyone who thinks faster than they type.",
       "Choose from several languages and accents, dictate for as long as you like, then copy the transcript or download it as a text file. The whole thing runs through your browser's built-in speech engine, so it's fast and free.",
@@ -362,6 +388,9 @@ const OVERRIDES = {
     ],
   },
   "currency-converter": {
+    title: "Currency Converter — Live Rates, 30+ Currencies",
+    description:
+      "Convert between 30+ currencies at live exchange rates that update continuously. Free and instant, with no account needed to check today's rate.",
     intro: [
       "The Currency Converter shows you live exchange rates for more than 30 major world currencies, including USD, EUR, GBP, INR, JPY, AUD and CAD. Type an amount, choose the currencies, and get an accurate, up-to-date conversion instantly.",
       "Rates are pulled from trusted daily reference data, so whether you're budgeting a trip, shopping from an overseas store, invoicing an international client or just curious, you'll always see a realistic figure. A quick reference table also shows your amount in several popular currencies at once.",
@@ -374,6 +403,9 @@ const OVERRIDES = {
     ],
   },
   "meme-generator": {
+    title: "Meme Generator — Captions, No Watermark",
+    description:
+      "Add classic top and bottom captions to any image and download the meme with no watermark. Free, unlimited and made entirely in your browser.",
     intro: [
       "The Meme Generator lets you turn any image into a classic meme in seconds. Upload a picture, add bold top and bottom captions in the iconic Impact style, tweak the size and colours, then download your creation as a ready-to-share PNG.",
       "There are no watermarks, no signups and no clunky editors — just fast, fun meme-making right in your browser. Everything stays on your device, so your images are completely private.",
@@ -386,6 +418,9 @@ const OVERRIDES = {
     ],
   },
   "barcode-generator": {
+    title: "Barcode Generator — CODE128, EAN, UPC & More",
+    description:
+      "Create CODE128, EAN-13, UPC-A and other barcodes from any value, then download them for labels or inventory. Free, unlimited and generated locally.",
     intro: [
       "The Barcode Generator creates scannable barcodes in every popular format — CODE128, EAN-13, UPC, CODE39, ITF-14 and more. Enter your value, choose a format, customise the size and colours, and download the barcode as a crisp PNG or scalable SVG.",
       "It's ideal for retail products, inventory and warehouse labels, asset tracking, shipping and events. The barcodes are generated in your browser, so your data stays private and there's no signup or cost.",
@@ -398,6 +433,9 @@ const OVERRIDES = {
     ],
   },
   "password-strength": {
+    title: "Password Strength Checker — Crack-Time Estimate",
+    description:
+      "Check how strong a password really is and see its estimated crack time, entropy score and specific weaknesses. Tested in your browser, never sent.",
     intro: [
       "The Password Strength Checker tells you how strong — and how crackable — a password really is. Type a password and instantly see a strength score, an estimate of how long it would take to crack, and specific tips to make it stronger.",
       "It checks length, character variety and common weak patterns like sequences, repeats and well-known passwords. Everything is calculated locally in your browser: your password is never sent anywhere, stored or logged.",
@@ -410,6 +448,9 @@ const OVERRIDES = {
     ],
   },
   "favicon-generator": {
+    title: "Favicon Generator — 16px to 512px, Free",
+    description:
+      "Create a full favicon set from 16x16 to 512x512 out of an image or a single letter, ready to drop into any site. Free, instant and no signup.",
     intro: [
       "The Favicon Generator creates all the icon sizes a website needs — 16, 32, 48, 180, 192 and 512 pixels — from a single image or even just a letter. Upload a logo or type a character, pick your colours and shape, and download ready-to-use favicons plus the HTML code to add them.",
       "Everything is generated in your browser, so your artwork stays private and there's nothing to install. It's the quick, free way to give your site a polished, professional icon in the browser tab and on phone home screens.",
@@ -422,6 +463,9 @@ const OVERRIDES = {
     ],
   },
   "json-to-typescript": {
+    title: "JSON to TypeScript — Generate Types Instantly",
+    description:
+      "Paste any JSON and get clean TypeScript interfaces with nested types and optional fields inferred. Copy it straight into your project — no signup.",
     intro: [
       "JSON to TypeScript instantly turns any JSON into clean, ready-to-use TypeScript type definitions. Paste an API response or config object and get accurate interfaces — with nested objects, arrays and optional fields all handled for you.",
       "It saves developers from writing types by hand, cuts down on runtime bugs, and keeps your codebase strongly typed. The conversion runs entirely in your browser, so your data never leaves your machine.",
@@ -434,6 +478,9 @@ const OVERRIDES = {
     ],
   },
   "ai-assistant": {
+    title: "AI Assistant — Find the Right Tool Instantly",
+    description:
+      "Describe what you need in plain English and the AI assistant points you at the right free tool for the job. No account and no API key required.",
     intro: [
       "The AI Assistant is your friendly guide to 150+ free tools. Just tell it what you're trying to do — \"compress a photo\", \"make a resume\", \"download a video\" — and it instantly points you to the right tool, no menu-hunting required.",
       "It understands everyday language and synonyms, so you don't need to know the exact tool name. It also answers quick questions about how the site works. Everything runs in your browser: your messages are matched to tools locally and are never sent anywhere.",
@@ -446,6 +493,9 @@ const OVERRIDES = {
     ],
   },
   "ai-cover-letter": {
+    title: "AI Cover Letter Generator — Free, No Signup",
+    description:
+      "Generate a tailored cover letter from your role, skills and the job description in seconds, then edit and copy it. Free, with no account needed.",
     intro: [
       "The AI Cover Letter Generator writes a tailored, professional cover letter in seconds. Enter the job title, the company, and a few of your key skills, choose a tone, and get a complete, well-structured letter you can copy, tweak and send.",
       "It handles the hard part — a strong opening hook, body paragraphs that sell your strengths, and a confident close — using proven phrasing so you never stare at a blank page again. Everything is generated in your browser and nothing you type is stored.",
@@ -458,6 +508,9 @@ const OVERRIDES = {
     ],
   },
   "ai-email-writer": {
+    title: "AI Email Writer — Professional Emails, Free",
+    description:
+      "Write clear, professional emails for any situation — follow-ups, requests, apologies — just by describing the context. Free AI drafting, no signup.",
     intro: [
       "The AI Email Writer drafts clear, professional emails for any situation — follow-ups, job applications, meeting requests, apologies, thank-yous, resignations, sales outreach and more. Pick the type, add your key points, choose a tone, and get a ready-to-send email with a subject line.",
       "It saves you from agonising over wording and gets the structure and etiquette right every time. The email is generated entirely in your browser, so your message stays private.",
@@ -470,6 +523,9 @@ const OVERRIDES = {
     ],
   },
   "business-name-generator": {
+    title: "Business Name Generator — Brandable Ideas",
+    description:
+      "Get brandable business and startup name ideas from a few keywords about what you do. Free, unlimited generations and no account required.",
     intro: [
       "The Business Name Generator sparks brandable name ideas for your startup, shop, app or side project. Enter a keyword or your industry, pick a style — Modern, Playful, Premium, Techy or Classic — and get a big list of creative names to choose from.",
       "It mixes smart strategies (prefixes, suffixes, blends, compounds and invented words) to give you names that actually sound like real brands. Everything runs in your browser, instantly and for free.",
@@ -482,6 +538,9 @@ const OVERRIDES = {
     ],
   },
   "resume-template-builder": {
+    title: "Resume Template Builder — Pick a Design, Get a PDF",
+    description:
+      "Fill in your details, choose from ready-made resume designs and download a polished PDF. Free, with no watermark and no account required.",
     intro: [
       "The Resume Template Builder lets you create a professional, recruiter-ready resume in minutes — just fill in your information, pick from several polished designs, and download a clean PDF. Switch between Modern, Classic, Minimal and Two-Column templates instantly to find the look that fits your industry.",
       "Everything updates in a live preview as you type, and you can recolour any template to match your style. Your details are saved in your browser and never uploaded, so building your resume is completely private and free — no signup, no watermark.",
@@ -495,6 +554,9 @@ const OVERRIDES = {
     ],
   },
   "wedding-hashtag-generator": {
+    title: "Wedding Hashtag Generator — Free Custom Ideas",
+    description:
+      "Get dozens of cute, punny wedding hashtag ideas built from the couple's names and wedding date. Free, unlimited and no signup required.",
     intro: [
       "The Wedding Hashtag Generator creates dozens of cute, custom hashtags for your big day from just your first names — plus your new last name and wedding year if you want. Enter the couple's names and instantly get playful, classic, funny and elegant options to choose from.",
       "A shared wedding hashtag is the easiest way to collect every guest's photos in one place: put it on your invitations, signage and place cards, and everyone's snaps land under a single tag on Instagram and TikTok. Pick one or two favourites and you're set.",
@@ -508,6 +570,9 @@ const OVERRIDES = {
     ],
   },
   "pdf-merge": {
+    title: "Merge PDF — Combine PDF Files Free Online",
+    description:
+      "Combine several PDFs into a single file in the order you choose, then download it. Free with no page limit — merging happens right in your browser.",
     intro: [
       "Merge PDF combines several PDF files into one document, in the order you choose. Drag your files in, reorder them until the sequence is right, and download a single merged PDF — page sizes, orientation and embedded fonts are all preserved exactly as they were.",
       "The merge happens inside your browser using the PDF's own page objects, which means two things worth knowing: nothing is uploaded to a server, and the pages are copied rather than re-rendered, so there is no quality loss and no re-compression. A scanned page merged today looks identical to the original.",
@@ -526,6 +591,9 @@ const OVERRIDES = {
     ],
   },
   "pdf-split": {
+    title: "Split PDF — Extract Pages or Page Ranges",
+    description:
+      "Pull single pages or custom page ranges out of a PDF into new files. Free, unlimited and processed in your browser, so the document never uploads.",
     intro: [
       "Split PDF pulls a large document apart — extract a single page, pick a range like 4-9, or break every page into its own file. Load the PDF, choose what you need, and download the result without touching the rest of the document.",
       "Extracted pages keep their original quality, text layer and dimensions, because the pages are lifted out rather than re-rendered. Selectable text stays selectable and searchable after the split.",
@@ -543,6 +611,9 @@ const OVERRIDES = {
     ],
   },
   "pdf-compress": {
+    title: "Compress PDF — Reduce PDF File Size Free",
+    description:
+      "Shrink a PDF so it fits email and upload limits, with the quality trade-off shown before you download. Free, unlimited and processed on your device.",
     intro: [
       "Compress PDF shrinks an oversized document so it fits an email attachment limit or an upload cap. Most of the weight in a large PDF is images, so that's where the savings come from — the images are re-encoded at a lower quality while the text layer is left untouched and stays perfectly sharp.",
       "How much you save depends entirely on what's inside. A text-heavy report may barely shrink because there was little to remove. A file full of phone photos or scanned pages often drops by 60-90%, because camera images carry far more pixel data than a printed page needs.",
@@ -556,6 +627,9 @@ const OVERRIDES = {
     ],
   },
   "images-to-pdf": {
+    title: "Images to PDF — Convert JPG and PNG to PDF",
+    description:
+      "Turn JPG, PNG and WebP images into one ordered PDF at your chosen page size. Free, unlimited and converted in your browser with no upload.",
     intro: [
       "Images to PDF turns a pile of photos or scans into one tidy PDF document. Add JPG, PNG or WebP files, drag them into the right order, and download a single PDF with one image per page.",
       "This is the fix for the very common problem of a form or portal that insists on a PDF when what you have is photos — a passport scan, receipts for an expense claim, handwritten notes, or a set of ID documents. Rather than pasting images into a word processor and exporting, you get a clean PDF directly.",
@@ -574,6 +648,9 @@ const OVERRIDES = {
     ],
   },
   "image-compressor": {
+    title: "Image Compressor — Shrink JPG, PNG and WebP",
+    description:
+      "Reduce image file size with adjustable quality and see the savings before you download. Compression happens in your browser, so nothing is uploaded.",
     intro: [
       "The Image Compressor makes photos dramatically smaller while keeping them looking the same. Drop an image in, adjust the quality slider, and watch the file size update live next to a preview so you can see exactly what you're trading away before you download.",
       "The saving comes from JPEG's quality setting, and the curve is steeply in your favour: dropping from 100% to around 80% typically cuts file size by 60-70% with almost no visible difference, because the discarded detail sits in frequencies your eye barely registers. Below about 60% you'll start to see blocking around sharp edges and text.",
@@ -587,6 +664,9 @@ const OVERRIDES = {
     ],
   },
   "image-resizer": {
+    title: "Image Resizer — Exact Pixel Dimensions, Free",
+    description:
+      "Resize JPG, PNG and WebP images to exact pixel dimensions or by percentage with the aspect ratio locked. Runs in your browser — images never upload.",
     intro: [
       "The Image Resizer changes an image's pixel dimensions — to hit an exact upload requirement, to fit a layout, or simply to stop a 4000-pixel-wide camera photo being used where 800 would do. Enter a width or height, keep the aspect ratio locked, and download the result.",
       "Resizing down is safe and often improves quality-per-byte, since you're discarding pixels you weren't displaying anyway. Resizing up is a different matter: enlarging can't invent detail that was never captured, so a small image scaled up will look soft no matter what tool does it. Start from the largest original you have.",
@@ -604,6 +684,9 @@ const OVERRIDES = {
     ],
   },
   "bmi-calculator": {
+    title: "BMI Calculator — Metric and Imperial, Free",
+    description:
+      "Calculate body mass index from height and weight in metric or imperial units and see which BMI category the result falls in. Free and instant.",
     intro: [
       "The BMI Calculator works out your Body Mass Index from your height and weight, in either metric or imperial units, and shows where it falls on the standard World Health Organization scale.",
       "The formula is weight in kilograms divided by height in metres squared. The WHO bands are: under 18.5 underweight, 18.5-24.9 healthy weight, 25-29.9 overweight, and 30 or above obese. Those thresholds are population-level guidance drawn from large studies, not a diagnosis of any individual.",
@@ -617,6 +700,9 @@ const OVERRIDES = {
     ],
   },
   "loan-calculator": {
+    title: "Loan & EMI Calculator — Payment and Interest",
+    description:
+      "Calculate the monthly payment, total interest and full cost of a loan from the amount, rate and term. Free EMI calculator with an instant breakdown.",
     intro: [
       "The Loan / EMI Calculator shows your monthly repayment on any loan, plus the total interest you'll pay across its full term. Enter the amount, the annual interest rate and the number of years, and the figures update as you type.",
       "It uses the standard amortisation formula: EMI = P x r x (1+r)^n / ((1+r)^n - 1), where P is the principal, r is the monthly interest rate and n is the number of monthly payments. That's the same calculation banks use, so the monthly figure should match a lender's quote closely.",
@@ -630,6 +716,9 @@ const OVERRIDES = {
     ],
   },
   "compound-interest": {
+    title: "Compound Interest Calculator — Project Growth",
+    description:
+      "See how savings or investments grow with compound interest, including regular contributions and any compounding frequency. Free and instant.",
     intro: [
       "The Compound Interest Calculator projects how an investment grows when returns are earned on top of previous returns. Enter your starting amount, rate, time period and compounding frequency to see the final balance and how much of it is interest rather than your own contributions.",
       "The formula is A = P(1 + r/n)^(nt) — principal, annual rate, compounds per year, and years. What makes compounding powerful isn't the rate so much as the exponent: time is doing most of the work. The same rate over 30 years produces a dramatically different outcome than over 10, and the gap widens the longer you leave it.",
@@ -643,6 +732,9 @@ const OVERRIDES = {
     ],
   },
   "percentage-calculator": {
+    title: "Percentage Calculator — Percent Of, Change & More",
+    description:
+      "Work out percent of a number, percentage increase or decrease, and what percent one number is of another. Free, instant and shows the working.",
     intro: [
       "The Percentage Calculator handles the three percentage questions that actually come up, without you having to remember which way round the formula goes: what is X% of Y, X is what percent of Y, and what's the percentage change from X to Y.",
       "That third one causes the most confusion, because percentage increase and decrease aren't symmetrical. A price that rises 50% and then falls 50% does not return to where it started — it ends up 25% below, because the decrease applies to the larger number. This catches people out constantly with discounts and investment returns.",
@@ -655,6 +747,9 @@ const OVERRIDES = {
     ],
   },
   "age-calculator": {
+    title: "Age Calculator — Exact Age from Date of Birth",
+    description:
+      "Get an exact age in years, months and days from any date of birth, plus the days until the next birthday. Free, instant and works for any date.",
     intro: [
       "The Age Calculator gives your exact age from a date of birth — years, months and days — along with your total days lived and how long until your next birthday. It also works for any two dates, so you can measure the gap between events.",
       "Date arithmetic is fiddlier than it looks, which is why doing it in your head goes wrong. Months have different lengths, leap years add a day every four years (but not in century years unless divisible by 400), and the answer depends on whether you count from the start or end of a month. The calculator handles all of that.",
@@ -667,6 +762,9 @@ const OVERRIDES = {
     ],
   },
   "base64-encoder": {
+    title: "Base64 Encoder & Decoder — Text and Data URLs",
+    description:
+      "Encode text to Base64 or decode it back in one click. Handles UTF-8 and data URLs locally, so whatever you paste never leaves your device.",
     intro: [
       "Base64 Encode / Decode converts text and binary data to and from Base64, the encoding used whenever binary content has to travel through a text-only channel — data URIs in CSS, email attachments, JSON payloads, JWT segments and HTTP basic auth headers.",
       "The scheme is defined in RFC 4648. It maps every 3 bytes onto 4 printable ASCII characters, which is why encoded output is always about 33% larger than the input, and why you often see one or two '=' characters padding the end when the input length isn't a multiple of three.",
@@ -680,6 +778,9 @@ const OVERRIDES = {
     ],
   },
   "hash-generator": {
+    title: "Hash Generator — SHA-1, SHA-256, SHA-384, SHA-512",
+    description:
+      "Generate SHA-1, SHA-256, SHA-384 and SHA-512 hashes from any text, then compare checksums to verify integrity. Computed in-browser, never uploaded.",
     intro: [
       "The Hash Generator produces SHA-1, SHA-256, SHA-384 and SHA-512 digests from any text. Hashing is one-way: the same input always yields the same fixed-length output, but there's no way to work backwards from a hash to the original.",
       "The everyday use is integrity checking. Download a file, hash it, compare against the published checksum — if a single byte differs anywhere, the hash changes completely. That avalanche property is what makes hashes useful for detecting tampering or corruption.",
@@ -693,6 +794,9 @@ const OVERRIDES = {
     ],
   },
   "regex-tester": {
+    title: "Regex Tester — Live Matches, Groups and Flags",
+    description:
+      "Test regular expressions against sample text with live highlighting, capture groups and flags. Debug patterns instantly, entirely in your browser.",
     intro: [
       "The Regex Tester lets you build and debug a regular expression against sample text, with matches highlighted live as you type. Capture groups are broken out separately, so you can see exactly what each part of your pattern caught.",
       "It uses the JavaScript RegExp engine, which matters when you're copying patterns between languages. JavaScript has no lookbehind in older browsers, doesn't support recursive patterns at all, and treats named groups with the (?<name>...) syntax. A pattern lifted from a PCRE or Python example may behave differently or fail outright.",
@@ -711,6 +815,9 @@ const OVERRIDES = {
     ],
   },
   "case-converter": {
+    title: "Case Converter — camelCase, snake_case, Title",
+    description:
+      "Convert text between camelCase, snake_case, kebab-case, Title Case, UPPER and lower in one click. Free, instant and runs entirely in your browser.",
     intro: [
       "The Case Converter rewrites text into any case you need — UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case and kebab-case — without retyping a word.",
       "The programming cases are the ones that save the most time. Converting 'user profile image' into userProfileImage, UserProfileImage, user_profile_image or user-profile-image by hand is tedious and easy to get subtly wrong, especially across a long list of variable or column names.",
@@ -723,6 +830,9 @@ const OVERRIDES = {
     ],
   },
   "text-diff": {
+    title: "Text Diff Checker — Compare Two Texts Free",
+    description:
+      "Compare two blocks of text line by line and see exactly what was added, removed or changed. Free, instant and processed in your own browser.",
     intro: [
       "The Text Diff Checker compares two blocks of text and highlights exactly what changed — additions, deletions and edits — so you can spot differences that are effectively invisible when reading side by side.",
       "It's built for the cases where a single character matters: two versions of a contract, a config file that worked yesterday and doesn't today, a document returned with untracked edits, or two API responses that should be identical. The comparison works line by line and marks changes within a line, so a single altered word doesn't flag the whole paragraph.",
@@ -735,6 +845,9 @@ const OVERRIDES = {
     ],
   },
   "youtube-thumbnail": {
+    title: "YouTube Thumbnail Downloader — HD, Free",
+    description:
+      "Grab any YouTube video's thumbnail in HD, HQ, MQ and SD sizes by pasting the link. Free, instant download with no signup and no watermark.",
     intro: [
       "The YouTube Thumbnail Downloader grabs the cover image from any YouTube video in every resolution YouTube stores. Paste a video URL and you'll see the available sizes with direct download links.",
       "YouTube generates a fixed set of thumbnails for each upload: maxresdefault at 1280x720, sddefault at 640x480, hqdefault at 480x360, mqdefault at 320x180 and default at 120x90. Not every video has all of them — maxresdefault only exists if the video was uploaded in HD, which is why it sometimes 404s on older or low-resolution uploads.",
@@ -747,6 +860,9 @@ const OVERRIDES = {
     ],
   },
   "typing-test": {
+    title: "Typing Speed Test — Measure Your WPM & Accuracy",
+    description:
+      "Test your typing speed and accuracy with a timed WPM test that highlights mistakes as you go. Free, no signup and instantly repeatable.",
     intro: [
       "The Typing Speed Test measures how fast and how accurately you type, reporting words per minute alongside an accuracy percentage. Start typing the displayed text and the timer begins automatically.",
       "WPM uses the standard definition where a 'word' is five characters including spaces — so 250 characters in a minute is 50 WPM, regardless of the actual words. This is the convention every typing test uses, which is what makes scores comparable between them.",
@@ -783,6 +899,13 @@ const OVERRIDES = {
   },
 };
 
+/* Hand-written content lives in two files purely to keep each readable: the
+   entries above, and the batch in toolContentExtra.js written to replace the
+   generic generator's output. They behave identically — a tool present in
+   either is treated as having real content, which also makes it indexable via
+   hasRichContent(). */
+const OVERRIDES = { ...BASE_OVERRIDES, ...EXTRA_OVERRIDES };
+
 // ---- generic generator for every other tool -------------------------------
 function kindOf(service, categorySlug) {
   const n = (service.slug + " " + service.name).toLowerCase();
@@ -811,6 +934,40 @@ const HOWTO = {
 
 function stripPeriod(s) {
   return (s || "").trim().replace(/\.$/, "");
+}
+
+// Lowercase only a leading ordinary word, so mid-sentence joins read naturally
+// without mangling a unit symbol or a proper noun ("A litre" -> "a litre", but
+// "Wi-Fi" and "FM radio" keep their capitals).
+function lowerFirst(s) {
+  return String(s || "").replace(/^[A-Z](?=[a-z])/, (ch) => ch.toLowerCase());
+}
+
+// Sample values chosen per dimension so the worked examples are quantities a
+// reader would plausibly meet, rather than an abstract 1/10/100 everywhere.
+// Temperature includes a negative because the offset makes those the cases
+// people get wrong.
+const SAMPLE_INPUTS = {
+  length: [1, 10, 100],
+  weight: [1, 5, 50],
+  temperature: [-10, 0, 20, 100],
+  data: [1, 8, 64],
+  speed: [10, 50, 100],
+  volume: [1, 2, 10],
+  area: [1, 50, 500],
+  time: [1, 8, 24],
+  pressure: [1, 15, 30],
+  energy: [1, 100, 2000],
+  power: [1, 100, 1000],
+  angle: [1, 45, 90],
+  frequency: [1, 100, 1000],
+};
+
+// Trim floating-point noise without dropping genuine precision on small factors.
+function fmt(n) {
+  if (!Number.isFinite(n)) return String(n);
+  const r = Math.abs(n) >= 1 ? Math.round(n * 1000) / 1000 : Math.round(n * 1e6) / 1e6;
+  return String(r);
 }
 
 function generate(service, category) {
@@ -872,36 +1029,79 @@ function convertContent(service) {
   const to_ = toLabel.toLowerCase();
   const isTemp = dim === "temperature";
 
+  // Material specific to THESE two units, not to conversion in general. This is
+  // what makes each of the 100 pages genuinely different from the other 99:
+  // every page draws on the origin, usage and reference figures of its own pair.
+  const fromFact = unitFact(from);
+  const toFact = unitFact(to);
+  const dimNote = dimensionNote(dim);
+  const ctx = pairContext(service.slug);
+
   let factorLine, formulaAnswer, factorFaq;
   if (isTemp) {
-    factorLine = `Temperature scales don't use a single multiplier, so this converter applies the exact ${lo}-to-${to_} formula for you.`;
+    factorLine = `Because the two scales do not share a zero point, this needs a formula rather than a single multiplier — the converter applies the exact ${lo}-to-${to_} conversion for you.`;
     formulaAnswer = `Enter a value above and the exact ${to_} temperature appears instantly, using the standard ${lo}-to-${to_} formula.`;
   } else {
     const f = convert(1, from, to, dim);
-    factorLine = `The factor is simple: 1 ${fu} = ${f} ${tu}.`;
-    formulaAnswer = `Multiply your ${lo} figure by ${f} to get ${to_} — or just type a value above and read the answer instantly.`;
+    factorLine = `The factor is exact: 1 ${fu} = ${f} ${tu}.`;
+    formulaAnswer = `Multiply your ${lo} figure by ${f} to get ${to_} — or type a value above and read the answer straight off.`;
     factorFaq = { q: `How many ${to_} are in one ${singular(fromLabel)}?`, a: `1 ${fu} = ${f} ${tu}.` };
   }
 
+  // Paragraphs 2-4 carry the per-unit substance. Falling back gracefully means a
+  // new pair added to conversions.js still produces a usable page.
+  // The source unit gets the full treatment and the target unit only its
+  // reference figure. That is both the natural emphasis — you care most about
+  // the unit you are converting from — and what stops a reverse pair such as
+  // celsius-to-fahrenheit and fahrenheit-to-celsius reading as the same page.
+  // The dimension note lives in the FAQ rather than here for the same reason.
+  // Worked examples computed from the real factor. Unique to this pair by
+  // construction, and the thing a reader most often actually wants.
+  const samples = SAMPLE_INPUTS[dim] || [1, 10, 100];
+  const worked =
+    "Worked through with real numbers: " +
+    samples
+      .map((v) => `${fmt(v)} ${fu} is ${fmt(convert(v, from, to, dim))} ${tu}`)
+      .join(", ") +
+    ".";
+
   const intro = [
-    `Convert ${lo} to ${to_} instantly. Type any value in ${lo} and this free tool shows the exact equivalent in ${to_}, along with a reference table of common values. ${factorLine}`,
-    `Whether you're studying, cooking, travelling, shipping a package or working on a project, an accurate ${fromLabel} → ${toLabel} conversion is one tap away — no formula to memorise and no maths to do by hand.`,
-    `Everything runs right in your browser, so it's instant, free and private, and it works just as well on your phone as on your computer.`,
-  ];
+    `Convert ${lo} to ${to_} instantly, with a reference table of common values. ${factorLine}`,
+    ctx,
+    fromFact ? `${fromFact.origin} ${fromFact.usedBy} ${fromFact.anchor}` : null,
+    worked,
+    toFact ? `As for the other side of the conversion: ${lowerFirst(toFact.anchor)}` : null,
+    dimNote,
+  ].filter(Boolean);
+
   const howto = [
     `Enter the number of ${lo} you want to convert.`,
-    `The equivalent in ${to_} appears instantly — there's no button to press.`,
-    `Check the reference table for common ${fromLabel} → ${toLabel} values.`,
+    `The equivalent in ${to_} appears instantly — there is no button to press.`,
+    `Check the reference table for common ${fromLabel} to ${toLabel} values.`,
   ];
+
   const faqs = [
     { q: `How do I convert ${lo} to ${to_}?`, a: formulaAnswer },
     ...(factorFaq ? [factorFaq] : []),
-    { q: "Is this converter free and accurate?", a: "Yes. It's completely free, needs no signup, and uses precise standard conversion factors so you can rely on every result." },
-    { q: "Does it work on mobile?", a: `Yes — the ${fromLabel} to ${toLabel} converter runs in any browser on your phone, tablet or computer.` },
+    ...(ctx ? [{ q: `When would I need to convert ${lo} to ${to_}?`, a: ctx }] : []),
+    ...(fromFact
+      ? [{ q: `What is a ${singular(fromLabel).toLowerCase()}, exactly?`, a: `${fromFact.origin} ${fromFact.anchor}` }]
+      : []),
+    ...(toFact
+      ? [{ q: `Where is the ${singular(toLabel).toLowerCase()} actually used?`, a: `${toFact.usedBy} ${toFact.anchor}` }]
+      : []),
+    ...(dimNote ? [{ q: `Is there anything tricky about ${dim} conversions?`, a: dimNote }] : []),
+    {
+      q: "Is this converter accurate?",
+      a: isTemp
+        ? "Yes. It applies the standard scale conversion exactly, with no rounding beyond what is shown."
+        : `Yes. It uses the exact standard factor of 1 ${fu} = ${convert(1, from, to, dim)} ${tu}, and the conversion runs in your browser so nothing is uploaded.`,
+    },
   ];
+
   return {
-    title: `${service.name} Converter – Free & Instant`,
-    description: `Convert ${lo} to ${to_} instantly with a free online converter and reference table. Fast, accurate and no signup.`,
+    title: `${fromLabel} to ${toLabel} Converter — Free & Instant`,
+    description: `Convert ${lo} to ${to_} instantly, with the exact factor, a reference table and what each unit actually measures. Free, no signup.`,
     intro,
     howto,
     faqs,
@@ -912,15 +1112,21 @@ function convertContent(service) {
  * True when a tool page carries hand-written content rather than the generic
  * `generate()` boilerplate.
  *
- * This is the site's indexing gate. Pages built from a template — the 100
- * "X to Y" conversion pages and every tool without an OVERRIDES entry — read
- * as near-duplicates of each other, which is what got the site flagged for
- * thin content. Those pages stay live and usable; they are just kept out of
- * the sitemap and marked noindex.
+ * This is the site's indexing gate. Keyed off OVERRIDES so the rule maintains
+ * itself: write real content for a tool and its page becomes indexable on the
+ * next deploy. No separate allow-list to drift out of sync.
  *
- * Deliberately keyed off OVERRIDES so the rule maintains itself: write real
- * content for a tool and its page becomes indexable on the next deploy. No
- * separate allow-list to drift out of sync.
+ * The `convert` exception is now a crawl-budget decision rather than a quality
+ * one. These 100 pages were templated near-duplicates — measured at 45% mean
+ * pairwise similarity — but they are now composed from per-unit material and
+ * per-direction context in unitFacts.js, which brought that down to about 22%,
+ * comparable to the hand-written pages. They are held back only because
+ * submitting 100 extra URLs on a domain with no crawl authority spreads a small
+ * budget thin.
+ *
+ * To submit them, delete the line below. That is the whole change — they are
+ * already built, linked and carrying real content either way, and AdSense
+ * crawls them regardless of what this returns.
  */
 export function hasRichContent(category, service) {
   if (category.slug === "convert") return false;

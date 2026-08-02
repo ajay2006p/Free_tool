@@ -62,6 +62,16 @@ export async function generateMetadata({ params }) {
       url: `${site.url}/blog/${post.slug}`,
       images: post.coverImage ? [post.coverImage] : [],
     },
+    // Twitter tags must be restated per page. Next.js merges `metadata` field by
+    // field, so a page that sets only `openGraph` still inherits the root
+    // layout's `twitter` block verbatim — leaving every share card titled
+    // "FreeTool" with the generic site description instead of the post's own.
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images: post.coverImage ? [post.coverImage] : ["/og.png"],
+    },
   };
 }
 
