@@ -43,7 +43,7 @@ const AI_AND_SEARCH_BOTS = [
 // pages) and the admin area. These are not ours to rank: they hold visitors'
 // own content and arbitrary outbound links, so keeping them out of the index
 // protects the domain's quality signals. Each page is also noindex'd directly.
-const PRIVATE_PATHS = ["/f/", "/p/", "/admin", "/api/", "/account"];
+const PRIVATE_PATHS = ["/f/", "/p/", "/admin", "/api/"];
 
 export default function robots() {
   return {

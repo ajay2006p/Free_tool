@@ -63,10 +63,8 @@ Your website and admin are separate apps, so import the repo twice.
 | `DATABASE_URL` | your MongoDB string |
 | `NEXT_PUBLIC_SITE_URL` | your website's Vercel URL (e.g. https://alltools.vercel.app) |
 | `NEXT_PUBLIC_ADSTERRA_KEY` | your Adsterra key (optional) |
-| `USER_SESSION_SECRET` | any long random text |
 | `ANTHROPIC_API_KEY` | (optional, for AI tools) |
 | `SOCIAL_DL_API_URL` / `_KEY` / `_HOST` | (optional, downloader) |
-| `SCRAPER_API_URL` / `_KEY` | (optional, scraper) |
 
 ### Env vars — admin
 | Key | Value |
@@ -92,6 +90,6 @@ Open your **live** website URL, then in **Adsterra → Websites** add that domai
 ---
 
 ### Notes
-- Change `ADMIN_PASSWORD`, `ADMIN_TOKEN`, `USER_SESSION_SECRET` before going live.
+- Change `ADMIN_PASSWORD` and `ADMIN_TOKEN` before going live.
 - Manage ads from **Admin → Monetization** (no redeploy needed).
 - The old local SQLite data isn't carried over — MongoDB starts fresh (the seed re-adds the 3 example blog posts). Write new posts from the admin panel.

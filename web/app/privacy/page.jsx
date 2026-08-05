@@ -60,11 +60,10 @@ export default function PrivacyPage() {
         <h2>Third-party services</h2>
         <p>
           A small number of tools need to talk to outside services to do their
-          job. For example, the currency converter fetches live exchange rates, the
-          media/downloader tools contact the relevant source, and the business
-          scraper queries public data sources. When you use one of these specific
-          tools, the minimum request needed to return your result is sent to that
-          third party. We keep this list short and only reach out to external
+          job. For example, the currency converter fetches live exchange rates and
+          the media/downloader tools contact the relevant source. When you use one
+          of these specific tools, the minimum request needed to return your result
+          is sent to that third party. We keep this list short and only reach out to external
           services when a tool genuinely requires it.
         </p>
         <p>
@@ -77,13 +76,12 @@ export default function PrivacyPage() {
         <h2>Your data &amp; rights</h2>
         <p>
           Because tools run client-side, there is usually no personal data of
-          yours sitting on our servers to export or delete. Using our tools does
-          not require an account. Optional free accounts exist for a few features,
-          and if you create one we store only what is needed to run it (such as
-          your email). You can ask us to delete your account and its data at any
-          time by emailing us. Depending on where you live, you may have rights to
+          yours sitting on our servers to export or delete. There are no accounts
+          on {site.name} at all - you never give us an email address or a password
+          to use any tool. Depending on where you live, you may have rights to
           access, correct or erase your personal data - we are happy to honour
-          reasonable requests.
+          reasonable requests, so email us if you believe we hold anything of
+          yours.
         </p>
 
         <h2>Children</h2>

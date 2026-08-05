@@ -9,7 +9,6 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
   { href: "/admin/analytics", label: "Analytics", icon: "📈" },
   { href: "/admin/posts/new", label: "New Post", icon: "✍️", match: "/admin/posts" },
-  { href: "/admin/users", label: "Users", icon: "🧑‍🤝‍🧑" },
   { href: "/admin/links", label: "Short Links", icon: "🔗" },
   { href: "/admin/monetization", label: "Monetization", icon: "💰" },
 ];
@@ -18,7 +17,6 @@ const TITLES = {
   "/admin": "Dashboard",
   "/admin/analytics": "Analytics",
   "/admin/posts/new": "New Post",
-  "/admin/users": "Users",
   "/admin/links": "Short Links",
   "/admin/monetization": "Monetization",
 };

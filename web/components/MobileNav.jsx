@@ -8,7 +8,6 @@ import { site } from "../lib/site";
 
 const EXTRA = [
   { href: "/services", icon: "🧰", label: "All tools" },
-  { href: "/scraper", icon: "🔎", label: "Business Scraper" },
   { href: "/blog", icon: "📝", label: "Blog" },
   { href: "/about", icon: "💡", label: "About" },
   { href: "/contact", icon: "✉️", label: "Contact" },
@@ -125,10 +124,6 @@ export default function MobileNav({ categories }) {
                 </span>
               </Link>
             ))}
-
-            <Link href="/account" className="btn drawer-cta">
-              👤 Log in / Sign up
-            </Link>
           </div>
         </nav>
       </div>

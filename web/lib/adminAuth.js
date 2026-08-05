@@ -1,9 +1,8 @@
 import { cookies } from "next/headers";
 
 // Admin panel auth — a single shared password (from ADMIN_PASSWORD) sets a signed
-// session cookie whose value equals ADMIN_TOKEN. This is SEPARATE from the public
-// user accounts in lib/userAuth.js (cookie "dh_user"), so logging into the site
-// as a visitor never grants admin access, and vice-versa.
+// session cookie whose value equals ADMIN_TOKEN. The public site has no accounts
+// of its own; this cookie is the only login anywhere on the domain.
 
 export const SESSION_COOKIE = "admin_session";
 

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { site } from "../lib/site";
 import { visibleCategories, allTools } from "../lib/catalog";
 import SearchBox from "./SearchBox";
-import UserMenu from "./UserMenu";
 import MobileNav from "./MobileNav";
 import Logo from "./Logo";
 
@@ -23,9 +22,7 @@ export default function Header() {
           {links.map((c) => (
             <Link key={c.slug} href={`/${c.slug}`} className="desk">{c.name.replace(" Tools", "")}</Link>
           ))}
-          <Link href="/scraper" className="desk">Scraper</Link>
           <Link href="/blog" className="desk">Blog</Link>
-          <UserMenu />
           <MobileNav categories={visibleCategories} />
         </nav>
       </div>
