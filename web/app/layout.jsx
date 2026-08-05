@@ -118,39 +118,30 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://tpc.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://ik.imagekit.io" />
-        {/* AdSense loader, deferred to idle.
-            On a throttled mobile connection this script and its downstream ad
-            requests competed for bandwidth with the HTML and CSS, pushing LCP to
-            7.4s while desktop sat at 0.5s. Waiting for the load event and then
-            for idle time keeps it entirely off the critical path.
-            Verification is unaffected: the meta tag above and /ads.txt are both
-            server-rendered and each verifies the site independently. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              `(function(){var s=${JSON.stringify(
-                `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`
-              )};` +
-              `function go(){if(window.__adsLoaded)return;window.__adsLoaded=1;` +
-              `var t=document.createElement('script');t.async=true;t.src=s;t.crossOrigin='anonymous';` +
-              `document.head.appendChild(t);}` +
-              // requestIdleCallback where supported, a short timeout elsewhere
-              // (Safari). The load event alone can still coincide with LCP on a
-              // slow connection, so idle time is the safer trigger.
-              `function schedule(){'requestIdleCallback'in window?requestIdleCallback(go,{timeout:3000}):setTimeout(go,1500);}` +
-              `document.readyState==='complete'?schedule():window.addEventListener('load',schedule,{once:true});})();`,
-          }}
-        />
+        {/* No AdSense loader here. It is requested by <AdUnit> when an actual ad
+            unit approaches the viewport — see components/AdUnit.jsx. Loading it
+            from the layout meant fetching ~230 KiB of script on every page view
+            even though no slot id is configured, so it had nothing to fill. */}
         {/* Google Analytics 4. `send_page_view: false` because App Router
             navigations don't reload the page — <Analytics> fires every view,
             including the first, so nothing is counted twice. */}
         {site.gaId ? (
           <>
             <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`} />
+            {/* The stub runs immediately, gtag.js is fetched at idle.
+                `gtag` is defined here, not by the remote script, and it only
+                pushes onto dataLayer — so config and every page_view queue up
+                and are replayed the moment the library arrives. Nothing is lost
+                by loading it late, and ~50 KiB leaves the critical path on the
+                mobile connection where it was measurably costing LCP. */}
             <script
               dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${site.gaId}',{send_page_view:false});`,
+                __html:
+                  `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${site.gaId}',{send_page_view:false});` +
+                  `(function(){function go(){if(window.__gaLoaded)return;window.__gaLoaded=1;` +
+                  `var t=document.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=${site.gaId}';document.head.appendChild(t);}` +
+                  `function schedule(){'requestIdleCallback'in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);}` +
+                  `document.readyState==='complete'?schedule():addEventListener('load',schedule,{once:true});})();`,
               }}
             />
           </>
