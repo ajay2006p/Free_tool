@@ -340,7 +340,12 @@ body.drawer-open { overflow: hidden; }
   position: absolute; inset: -14% -10% -22% -10%; z-index: 0; border-radius: 40px;
   background: radial-gradient(60% 60% at 70% 20%, rgba(79,70,229,.28), transparent 70%),
               radial-gradient(55% 55% at 20% 90%, rgba(124,58,237,.22), transparent 70%);
-  filter: blur(6px); animation: hs-breathe 7s ease-in-out infinite;
+  filter: blur(6px);
+  /* The blur is static but the element animates. Without promotion the browser
+     re-rasterises a blurred surface every frame; will-change gives it its own
+     layer so the compositor transforms an already-blurred texture. */
+  will-change: transform, opacity;
+  animation: hs-breathe 7s ease-in-out infinite;
 }
 @keyframes hs-breathe { 0%,100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
 
@@ -377,9 +382,14 @@ body.drawer-open { overflow: hidden; }
 .hs-pass { display: flex; flex-direction: column; gap: 14px; }
 .hs-field { font: 600 20px/1 var(--mono); letter-spacing: 1px; color: var(--text); background: var(--surface-2); border: 1px dashed var(--border-strong); border-radius: 10px; padding: 18px; text-align: center; }
 .hs-meter { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; border: 1px solid var(--border); }
-.hs-fill { display: block; height: 100%; width: 25%; border-radius: 999px; background: linear-gradient(90deg, var(--red), var(--amber), var(--green)); }
+/* Scales rather than resizes. Animating `width` runs layout and paint on every
+   frame, which is what Lighthouse reports as a non-composited animation; scaleX
+   runs on the compositor instead. The gradient is painted once at full width and
+   squashed, which looks the same as a narrow element containing the whole
+   gradient. The rounded ends are clipped by .hs-meter's overflow anyway. */
+.hs-fill { display: block; height: 100%; width: 100%; transform: scaleX(.25); transform-origin: left center; border-radius: 999px; background: linear-gradient(90deg, var(--red), var(--amber), var(--green)); }
 .hs-fill.go { animation: hs-fill 2.4s cubic-bezier(.4,0,.2,1) forwards; }
-@keyframes hs-fill { from { width: 18%; } to { width: 100%; } }
+@keyframes hs-fill { from { transform: scaleX(.18); } to { transform: scaleX(1); } }
 .hs-strong { font-size: 13px; font-weight: 700; color: var(--green); }
 .hs-btn { align-self: flex-start; font-size: 13px; font-weight: 700; color: #fff; background: var(--accent); padding: 9px 16px; border-radius: 8px; box-shadow: var(--shadow-sm); }
 
