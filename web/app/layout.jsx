@@ -95,30 +95,51 @@ const orgJsonLd = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* Raw <script> rather than next/script: AdSense verification reads the
-          server-rendered <head>, which `afterInteractive` never reaches. */}
       <head>
+        {/* AdSense site verification. This meta tag and /ads.txt are each a
+            complete verification method on their own — Google accepts the code
+            snippet, the ads.txt entry, or this tag. Both are server-rendered
+            here, which is what allows the loader script below to be deferred
+            without putting the pending application at risk. */}
         <meta name="google-adsense-account" content={adsense.client} />
         {/* Point AI crawlers at the plain-text site map they can read cheaply.
             /llms.txt is the index; /llms-full.txt carries the actual tool copy,
             steps and FAQ answers so an engine can answer without rendering JS. */}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
         <link rel="alternate" type="text/plain" href="/llms-full.txt" title="llms-full.txt" />
-        {/* Resource hints: open the connection to the heaviest third parties
-            (AdSense loader + ad servers, and the blog image CDNs) before the
-            browser parses the tags that need them. Shaves DNS + TCP + TLS
-            setup off the critical path — the main safe perf win on a site
-            whose biggest cost is the ad script we can't remove. */}
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        {/* Resource hints only — no preconnect to the ad host any more. A
+            preconnect opens a TCP+TLS handshake immediately, which is the right
+            trade when a script is fetched during load and the wrong one now
+            that it waits for idle: it would spend mobile bandwidth early to
+            speed up something deliberately deferred. dns-prefetch is far
+            cheaper and still removes the DNS lookup when the script does run. */}
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="dns-prefetch" href="https://tpc.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://ik.imagekit.io" />
+        {/* AdSense loader, deferred to idle.
+            On a throttled mobile connection this script and its downstream ad
+            requests competed for bandwidth with the HTML and CSS, pushing LCP to
+            7.4s while desktop sat at 0.5s. Waiting for the load event and then
+            for idle time keeps it entirely off the critical path.
+            Verification is unaffected: the meta tag above and /ads.txt are both
+            server-rendered and each verifies the site independently. */}
         <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`}
-          crossOrigin="anonymous"
+          dangerouslySetInnerHTML={{
+            __html:
+              `(function(){var s=${JSON.stringify(
+                `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense.client}`
+              )};` +
+              `function go(){if(window.__adsLoaded)return;window.__adsLoaded=1;` +
+              `var t=document.createElement('script');t.async=true;t.src=s;t.crossOrigin='anonymous';` +
+              `document.head.appendChild(t);}` +
+              // requestIdleCallback where supported, a short timeout elsewhere
+              // (Safari). The load event alone can still coincide with LCP on a
+              // slow connection, so idle time is the safer trigger.
+              `function schedule(){'requestIdleCallback'in window?requestIdleCallback(go,{timeout:3000}):setTimeout(go,1500);}` +
+              `document.readyState==='complete'?schedule():window.addEventListener('load',schedule,{once:true});})();`,
+          }}
         />
         {/* Google Analytics 4. `send_page_view: false` because App Router
             navigations don't reload the page — <Analytics> fires every view,
