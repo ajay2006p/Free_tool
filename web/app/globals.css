@@ -10,7 +10,11 @@
   --surface-2: #f8fafc;
   --text: #0f172a;
   --text-soft: #475569;
-  --muted: #94a3b8;
+  --muted: #626f86; /* was #94a3b8 — only 2.37:1 on the page background, below
+                      the 4.5:1 WCAG AA minimum for body text. #626f86 is the
+                      lightest value in the same slate family that clears 4.5:1
+                      against both the page background and white cards, so the
+                      visual hierarchy is unchanged. */
   --border: #e6e9ef;
   --border-strong: #d3d9e3;
   --accent: #4f46e5;
@@ -510,6 +514,14 @@ body.drawer-open { overflow: hidden; }
 .prose pre code { background: none; border: none; padding: 0; }
 .prose ul, .prose ol { padding-left: 1.4em; } .prose a { text-decoration: underline; }
 
+/* WCAG 1.4.1: a link inside a block of text must not rely on colour alone to be
+   recognisable. Navigation, cards and chips sit in unambiguous link contexts, so
+   they keep the clean underline-free treatment; links in running prose do not. */
+.seo-about a, .seo-how a, .seo-faq a, .qa-lead a, .article a, .faq-item a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ---------- Tool internals ---------- */
 .tool { margin-top: 4px; }
 .tool-io { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } @media (max-width: 720px) { .tool-io { grid-template-columns: 1fr; } }
@@ -549,7 +561,7 @@ label.fld, .fld { display: block; font-weight: 600; font-size: 13px; margin-bott
 .site-footer .inner { padding-top: 40px; padding-bottom: 24px; display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 24px; }
 @media (max-width: 820px) { .site-footer .inner { grid-template-columns: 1fr 1fr; gap: 28px 20px; } }
 @media (max-width: 520px) { .site-footer .inner { grid-template-columns: 1fr; gap: 26px; padding-top: 30px; padding-bottom: 18px; } }
-.footer-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; }
+.footer-col h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; }
 .footer-col ul { list-style: none; margin: 0; padding: 0; line-height: 2; }
 .footer-col a { color: var(--text-soft); } .footer-col a:hover { color: var(--accent); }
 

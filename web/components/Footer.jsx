@@ -19,7 +19,7 @@ export default function Footer() {
         </div>
         {cols.map((c) => (
           <div className="footer-col" key={c.slug}>
-            <h4>{c.name}</h4>
+            <h3>{c.name}</h3>
             <ul>
               {c.services.slice(0, 6).map((s) => (
                 <li key={s.slug}>
@@ -30,7 +30,7 @@ export default function Footer() {
           </div>
         ))}
         <div className="footer-col">
-          <h4>Company</h4>
+          <h3>Company</h3>
           <ul>
             <li><Link href="/about">About</Link></li>
             <li><Link href="/contact">Contact</Link></li>
