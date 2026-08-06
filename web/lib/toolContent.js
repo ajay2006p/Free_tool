@@ -1116,20 +1116,30 @@ function convertContent(service) {
  * itself: write real content for a tool and its page becomes indexable on the
  * next deploy. No separate allow-list to drift out of sync.
  *
- * The `convert` exception is now a crawl-budget decision rather than a quality
- * one. These 100 pages were templated near-duplicates — measured at 45% mean
- * pairwise similarity — but they are now composed from per-unit material and
- * per-direction context in unitFacts.js, which brought that down to about 22%,
- * comparable to the hand-written pages. They are held back only because
- * submitting 100 extra URLs on a domain with no crawl authority spreads a small
- * budget thin.
+ * The `convert` category used to be excluded outright. That exclusion has been
+ * removed, for two reasons.
  *
- * To submit them, delete the line below. That is the whole change — they are
- * already built, linked and carrying real content either way, and AdSense
- * crawls them regardless of what this returns.
+ * The quality premise expired. Those 100 pages were templated near-duplicates
+ * at 45% mean pairwise similarity when the rule was written. They are now built
+ * from per-unit material and per-direction context in unitFacts.js — origin,
+ * usage, reference anchors and worked examples computed from each pair's own
+ * factor — which measured 22.6%, comparable to the hand-written pages.
+ *
+ * The crawl-budget argument turned out to be backwards. Search Console shows
+ * these URLs sitting in "Discovered — currently not indexed" with no crawl date
+ * at all: Google finds them through internal links regardless of the sitemap,
+ * queues them, and never fetches them. Excluding them was not saving budget, it
+ * was spending discovery on pages that could never return anything. And because
+ * Google never crawled them, it never even saw the noindex.
+ *
+ * Unit conversion queries are also the most winnable terms this domain has.
+ * "cm to inches" is high-volume, low-competition and satisfied by exactly this
+ * page — far more reachable without backlinks than "json formatter".
  */
 export function hasRichContent(category, service) {
-  if (category.slug === "convert") return false;
+  // Every conversion pair has a full entry in unitFacts.js — verified against
+  // conversions.js, so there is no partial-content case to guard against here.
+  if (category.slug === "convert") return Boolean(conversionsBySlug[service.slug]);
   return Boolean(OVERRIDES[service.slug]);
 }
 
